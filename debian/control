@@ -48,3 +48,16 @@ Depends:
 Description: Debian helper tools for packaging Python libraries using PEP517
  This metapackage depends on the components necessary for building packages
  with the generic PEP517 build plugin.
+
+Package: pybuild-plugin-autopkgtest
+Architecture: all
+Multi-Arch: foreign
+Depends:
+ dh-python (= ${source:Version}),
+ debhelper,
+ make,
+Description: pybuild autopkgtest test runner (metapackage)
+ This package depends on the packages required to run pybuild-autopkgtest, a
+ pybuild-based autopkgtest test runner. pybuild-autopkgtest will run the same
+ test suite that regular pybuild runs during build time, but against the
+ installed packages and without doing a build first.

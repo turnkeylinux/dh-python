@@ -27,6 +27,7 @@ import sys
 from os import environ, getcwd, makedirs, remove
 from os.path import abspath, exists, isdir, join
 from shutil import rmtree
+from tempfile import mkdtemp
 
 INTERP_VERSION_RE = re.compile(r'^python(?P<version>3\.\d+)(?P<dbg>-dbg)?$')
 logging.basicConfig(format='%(levelname).1s: pybuild '
@@ -202,7 +203,13 @@ def main(cfg):
             home_dir.append('dbg')
         if cfg.name:
             home_dir.append(cfg.name)
-        home_dir = '.pybuild/{}'.format('_'.join(home_dir))
+        if cfg.system == "autopkgtest":
+            base_dir = environ.get('AUTOPKGTEST_TMP')
+            if not base_dir:
+                base_dir = mkdtemp(prefix='pybuild-autopkgtest-')
+        else:
+            base_dir = '.pybuild/{}'
+        home_dir = base_dir.format('_'.join(home_dir))
 
         build_dir = get_option('build_dir', interpreter, version,
                                default=join(home_dir, 'build'))

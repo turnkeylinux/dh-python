@@ -1,7 +1,7 @@
 #!/usr/bin/make -f
 INSTALL ?= install
 PREFIX ?= /usr/local
-MANPAGES ?= pybuild.1 dh_python3.1
+MANPAGES ?= pybuild.1 pybuild-autopkgtest.1 dh_python3.1
 DVERSION=$(shell dpkg-parsechangelog | sed -rne 's,^Version: (.+),\1,p' || echo 'DEVEL')
 VERSION=$(shell dpkg-parsechangelog | sed -rne 's,^Version: ([^-]+).*,\1,p' || echo 'DEVEL')
 
@@ -28,6 +28,7 @@ install:
 	$(INSTALL) -m 644 dhpython/*.py $(DESTDIR)$(PREFIX)/share/dh-python/dhpython/
 	$(INSTALL) -m 644 dhpython/build/*.py $(DESTDIR)$(PREFIX)/share/dh-python/dhpython/build/
 	$(INSTALL) -m 755 pybuild $(DESTDIR)$(PREFIX)/share/dh-python/
+	$(INSTALL) -m 755 pybuild-autopkgtest $(DESTDIR)$(PREFIX)/share/dh-python/
 	$(INSTALL) -m 755 dh_python3 $(DESTDIR)$(PREFIX)/share/dh-python/
 	sed -i -e 's/DEVELV/$(DVERSION)/' $(DESTDIR)$(PREFIX)/share/dh-python/pybuild
 	sed -i -e 's/DEVELV/$(DVERSION)/' $(DESTDIR)$(PREFIX)/share/dh-python/dh_python3

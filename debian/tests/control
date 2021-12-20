@@ -34,3 +34,12 @@ Depends:
  python3-tomli,
  tox
 Restrictions: allow-stderr
+
+Tests: pybuild-autopkgtest
+Depends:
+ autopkgtest,
+ dh-python,
+ dh-python-pep517,
+ make,
+ python3-all,
+Restrictions: allow-stderr

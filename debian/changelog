@@ -1,3 +1,10 @@
+dh-python (5.20221203) UNRELEASED; urgency=medium
+
+  * Add autopkgtest runner pybuild-autopkgtest, thanks Antonio Terceiro.
+    (closes: 1000803)
+
+ -- Stefano Rivera <stefanor@debian.org>  Fri, 02 Dec 2022 11:53:46 -0400
+
 dh-python (5.20221202) unstable; urgency=medium
 
   * Deprecate the flit plugin in favour of pyproject.
