@@ -1,3 +1,9 @@
+dh-python (5.20211218) UNRELEASED; urgency=medium
+
+  * pybuild: fix rst2man error, thanks Louis-Philippe Véronneau.
+
+ -- Stefano Rivera <stefanor@debian.org>  Wed, 22 Dec 2021 19:55:30 -0400
+
 dh-python (5.20211217) unstable; urgency=medium
 
   * Ignore environment markers for Python 2.7, our logic is specific to 3.x.
