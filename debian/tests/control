@@ -43,6 +43,7 @@ Depends:
  fakeroot,
  python3-all,
  python3-poetry-core,
+ python3-pytest,
  python3-setuptools,
  python3-tomli,
  tox

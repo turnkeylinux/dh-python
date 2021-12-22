@@ -14,7 +14,7 @@ override_dh_auto_install:
 	../../pybuild --install
 
 override_dh_auto_test:
-	../../pybuild --test
+	../../pybuild --test --test-pytest
 
 override_dh_auto_clean:
 	../../pybuild --clean --verbose
