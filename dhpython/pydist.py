@@ -516,7 +516,7 @@ def parse_pydep(impl, fname, bdep=None, options=None,
             dependency = guess_deps(req=line)
             if env_action is False:
                 dependency = None
-            elif isinstance(env_action, str):
+            elif dependency and isinstance(env_action, str):
                 dependency = ', '.join(
                     part.strip() + ' ' + env_action
                     for part in dependency.split(','))

@@ -2,6 +2,8 @@ dh-python (5.20211218) UNRELEASED; urgency=medium
 
   * pybuild: fix rst2man error, thanks Louis-Philippe Véronneau.
   * pybuild: Use the pytest runner for one of the pep517 test suites.
+  * dh_python*: Fix a crash when attempting to apply an environment markers to
+    an unknown module.
 
  -- Stefano Rivera <stefanor@debian.org>  Wed, 22 Dec 2021 19:55:30 -0400
 
