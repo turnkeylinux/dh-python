@@ -109,7 +109,7 @@ Files listed in debian/pkg.pyinstall file will be installed as public modules
 (i.e. into .../dist-packages/ directory) for all requested Python versions
 (dh_install doesn't know about python's site- vs. dist-packages issue).
 
-Syntax: ``path/to/file [VERSION_RANGE] [NAMESPACE]``
+Syntax: ``path/to/file [NAMESPACE] [VERSION_RANGE]``
 
 debian directory is automatically removed from the path, so you can place your
 files in debian/ directory and install them from this location (if you want to
