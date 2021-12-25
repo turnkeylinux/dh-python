@@ -1,3 +1,9 @@
+dh-python (5.20211226) UNRELEASED; urgency=medium
+
+  * debian/rules: respect DEB_BUILD_OPTIONS=nocheck, thanks Antonio Terceiro.
+
+ -- Stefano Rivera <stefanor@debian.org>  Sat, 25 Dec 2021 12:47:00 -0400
+
 dh-python (5.20211225) unstable; urgency=medium
 
   * pybuild: fix rst2man error, thanks Louis-Philippe Véronneau.
