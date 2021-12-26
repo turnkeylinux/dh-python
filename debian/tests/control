@@ -38,7 +38,7 @@ Depends:
  build-essential,
  debhelper,
  dh-python,
- dh-python-pep517,
+ pybuild-plugin-pyproject,
  flit,
  fakeroot,
  python3-all,

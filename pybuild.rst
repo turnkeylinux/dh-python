@@ -236,7 +236,7 @@ automatically selected.  These systems are currently supported::
 * distutils (most commonly used)
 * cmake
 * flit
-* pep517
+* pyproject
 * custom
 
 flit plugin
@@ -259,16 +259,17 @@ debian/rules file example::
     %:
     	dh $@ --with python3 --buildsystem=pybuild
 
-pep517
-~~~~~~
-The PEP 517 plugin drives the new standard interface for building Python
-packages, upstream. This is configured via `pyproject.toml`.
+pyproject
+~~~~~~~~~
+The pyproject plugin drives the new PEP-517 standard interface for
+building Python packages, upstream. This is configured via
+`pyproject.toml`.
 This plugin is still in beta, but it's expected to replace the distutils
 and flit plugins in the future.
 
 To use this plugin:
 
-* build depend on `dh-python-pep517` as well as any build tools
+* build depend on `pybuild-plugin-pyproject` as well as any build tools
   specified by upstream in `pyproject.toml`.
 
 ENVIRONMENT

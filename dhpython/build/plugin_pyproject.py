@@ -67,7 +67,7 @@ class BuildSystem(Base):
 
         # Explicitly requested?
         dh = DebHelper(build_options())
-        if 'dh-python-pep517' in dh.build_depends:
+        if 'pybuild-plugin-pyproject' in dh.build_depends:
             return 90
 
         try:
@@ -99,7 +99,7 @@ class BuildSystem(Base):
     def configure(self, context, args):
         if install is None:
             raise Exception("PEP517 plugin dependencies are not available. "
-                            "Please Build-Depend on dh-python-pep517")
+                            "Please Build-Depend on pybuild-plugin-pyproject.")
         # No separate configure step
         return 0
 
