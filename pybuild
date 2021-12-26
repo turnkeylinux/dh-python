@@ -35,6 +35,7 @@ log = logging.getLogger('dhpython')
 def main(cfg):
     log.debug('cfg: %s', cfg)
     from dhpython import build, PKG_PREFIX_MAP
+    from dhpython.debhelper import DebHelper, build_options
     from dhpython.version import Version, build_sorted, get_requested_versions
     from dhpython.interpreter import Interpreter
     from dhpython.tools import execute, move_matching_files
@@ -85,11 +86,22 @@ def main(cfg):
             env.setdefault('_PYTHON_SYSCONFIGDATA_NAME',
                            '_sysconfigdata__' + arch_data["DEB_HOST_MULTIARCH"])
 
-    if cfg.system:
+    # Selected on command line?
+    selected_plugin = cfg.system
+
+    # Selected by build_dep?
+    if not selected_plugin:
+        dh = DebHelper(build_options())
+        for build_dep in dh.build_depends:
+            if build_dep.startswith('pybuild-plugin-'):
+                selected_plugin = build_dep.split('-', 2)[2]
+                break
+
+    if selected_plugin:
         certainty = 99
-        Plugin = build.plugins.get(cfg.system)
+        Plugin = build.plugins.get(selected_plugin)
         if not Plugin:
-            log.error('unrecognized build system: %s', cfg.system)
+            log.error('unrecognized build system: %s', selected_plugin)
             exit(10)
         plugin = Plugin(cfg)
         context = {'ENV': env, 'args': {}, 'dir': cfg.dir}

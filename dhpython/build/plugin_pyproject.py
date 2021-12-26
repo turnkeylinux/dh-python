@@ -38,7 +38,6 @@ except ModuleNotFoundError:
     SchemeDictionaryDestination = WheelFile = install = None
 
 from dhpython.build.base import Base, shell_command
-from dhpython.debhelper import DebHelper, build_options
 
 log = logging.getLogger('dhpython')
 
@@ -64,11 +63,6 @@ class BuildSystem(Base):
         result = super().detect(context)
         # Temporarily reduce the threshold while we're in beta
         result -= 20
-
-        # Explicitly requested?
-        dh = DebHelper(build_options())
-        if 'pybuild-plugin-pyproject' in dh.build_depends:
-            return 90
 
         try:
             with open('pyproject.toml', 'rb') as f:
