@@ -1,4 +1,4 @@
-dh-python (5.20211226) UNRELEASED; urgency=medium
+dh-python (5.20211229) unstable; urgency=medium
 
   * debian/rules: respect DEB_BUILD_OPTIONS=nocheck, thanks Antonio Terceiro.
   * dh_python2(1) and dh_python3(1): Correct the field order for pyinstall
@@ -8,7 +8,7 @@ dh-python (5.20211226) UNRELEASED; urgency=medium
   * Allow explicitly selecting a pybuild plugin with a Build-Depends on
     pybuild-plugin-NAME, when such a binary package exists.
 
- -- Stefano Rivera <stefanor@debian.org>  Sat, 25 Dec 2021 12:47:00 -0400
+ -- Stefano Rivera <stefanor@debian.org>  Wed, 29 Dec 2021 15:26:43 -0400
 
 dh-python (5.20211225) unstable; urgency=medium
 
