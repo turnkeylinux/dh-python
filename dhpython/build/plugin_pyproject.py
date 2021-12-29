@@ -38,6 +38,7 @@ except ModuleNotFoundError:
     SchemeDictionaryDestination = WheelFile = install = None
 
 from dhpython.build.base import Base, shell_command
+from dhpython.debhelper import DebHelper, build_options
 
 log = logging.getLogger('dhpython')
 
@@ -63,6 +64,11 @@ class BuildSystem(Base):
         result = super().detect(context)
         # Temporarily reduce the threshold while we're in beta
         result -= 20
+
+        # LEGACY: Explicitly requested via the old Build-Dep?
+        dh = DebHelper(build_options())
+        if 'dh-python-pep517' in dh.build_depends:
+            return 90
 
         try:
             with open('pyproject.toml', 'rb') as f:
