@@ -25,9 +25,6 @@ Provides:
  dh-sequence-pypy,
  dh-sequence-python2,
  dh-sequence-python3,
- pybuild-plugin-cmake,
- pybuild-plugin-distutils,
- pybuild-plugin-flit,
 Suggests: libdpkg-perl, dpkg-dev, flit, python3-build, python3-tomli, python3-installer
 Breaks:
 # due to /usr/bin/dh_python3 and debhelper files
