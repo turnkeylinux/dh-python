@@ -1,3 +1,9 @@
+dh-python (5.20211230) unstable; urgency=medium
+
+  * Source-only upload.
+
+ -- Stefano Rivera <stefanor@debian.org>  Thu, 30 Dec 2021 20:06:24 -0400
+
 dh-python (5.20211229) unstable; urgency=medium
 
   * debian/rules: respect DEB_BUILD_OPTIONS=nocheck, thanks Antonio Terceiro.
