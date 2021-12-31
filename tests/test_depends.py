@@ -280,6 +280,7 @@ class TestEnvironmentMarkersDistInfo(DependenciesTestCase):
         'extra_feature': 'python3-extra-feature',
         'extra_test': 'python3-extra-test',
         'complex_marker': 'python3-complex-marker',
+        'complex_marker_2': 'python3-complex-marker-2',
         'no_markers_2': 'python3-no-markers-2',
     })
     dist_info_metadata = {
@@ -348,6 +349,8 @@ class TestEnvironmentMarkersDistInfo(DependenciesTestCase):
             "Requires-Dist: extra_test; extra == 'test'",
             "Requires-Dist: complex_marker; os_name != 'windows' "
                 "and implementation_name == 'cpython'",
+            "Requires-Dist: complex_marker_2; (os_name != 'windows') "
+                "and extra == 'test'",
             "Requires-Dist: no_markers_2",
         ),
     }
@@ -511,6 +514,7 @@ class TestEnvironmentMarkersDistInfo(DependenciesTestCase):
 
     def test_ignores_complex_environment_markers(self):
         self.assertNotInDepends('python3-complex-marker')
+        self.assertNotInDepends('python3-complex-marker-2')
 
     def test_depends_on_un_marked_dependency_after_extra(self):
         self.assertIn('python3-no-markers-2', self.d.depends)
@@ -607,6 +611,8 @@ class TestEnvironmentMarkersEggInfo(TestEnvironmentMarkersDistInfo):
             "extra_test",
             "[:os_name != 'windows' and implementation_name == 'cpython']",
             "complex_marker",
+            "[test:(os_name != 'windows')]",
+            "complex_marker_2",
         ),
     }
 

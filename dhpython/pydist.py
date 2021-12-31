@@ -75,6 +75,8 @@ REQUIRES_RE = re.compile(r'''
     \s*
     (?:;  # optional environment markers
         \s*
+        \(?  # optional parenthesis
+        \s*
         (?P<environment_marker>[a-z_]+)
         \s*
         (?P<environment_marker_op><=?|>=?|[=!~]=|===)
@@ -82,6 +84,8 @@ REQUIRES_RE = re.compile(r'''
         (?P<environment_marker_quote>['"])
         (?P<environment_marker_value>.*)
         (?P=environment_marker_quote)
+        \)?  # optional parenthesis
+        \s*
     )?
     ''', re.VERBOSE)
 EXTRA_RE = re.compile(r'''
