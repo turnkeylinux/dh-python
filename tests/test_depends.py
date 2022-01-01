@@ -349,7 +349,7 @@ class TestEnvironmentMarkersDistInfo(DependenciesTestCase):
             "Requires-Dist: extra_test; extra == 'test'",
             "Requires-Dist: complex_marker; os_name != 'windows' "
                 "and implementation_name == 'cpython'",
-            "Requires-Dist: complex_marker_2; (os_name != 'windows') "
+            "Requires-Dist: complex_marker_2; (python_version > \"3.4\") "
                 "and extra == 'test'",
             "Requires-Dist: no_markers_2",
         ),

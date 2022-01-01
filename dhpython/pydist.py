@@ -34,8 +34,9 @@ if __name__ == '__main__':
 
 from dhpython import PKG_PREFIX_MAP, PUBLIC_DIR_RE,\
     PYDIST_DIRS, PYDIST_OVERRIDES_FNAMES, PYDIST_DPKG_SEARCH_TPLS
-from dhpython.version import get_requested_versions, Version
+from dhpython.markers import ComplexEnvironmentMarker, parse_environment_marker
 from dhpython.tools import memoize
+from dhpython.version import get_requested_versions, Version
 
 log = logging.getLogger('dhpython')
 
@@ -74,18 +75,7 @@ REQUIRES_RE = re.compile(r'''
     \)?  # optional closing parenthesis
     \s*
     (?:;  # optional environment markers
-        \s*
-        \(?  # optional parenthesis
-        \s*
-        (?P<environment_marker>[a-z_]+)
-        \s*
-        (?P<environment_marker_op><=?|>=?|[=!~]=|===)
-        \s*
-        (?P<environment_marker_quote>['"])
-        (?P<environment_marker_value>.*)
-        (?P=environment_marker_quote)
-        \)?  # optional parenthesis
-        \s*
+        (?P<environment_marker>.+)
     )?
     ''', re.VERBOSE)
 EXTRA_RE = re.compile(r'''
@@ -105,19 +95,7 @@ REQ_SECTIONS_RE = re.compile(r'''
     (?P<section>[a-zA-Z0-9-_.]+)?
     \s*
     (?::
-        \s*
-        \(*
-        \s*
-        (?P<environment_marker>[a-z_]+)
-        \s*
-        (?P<environment_marker_op><=?|>=?|[=!~]=|===)
-        \s*
-        (?P<environment_marker_quote>['"])
-        (?P<environment_marker_value>.*)
-        (?P=environment_marker_quote)
-        \s*
-        \)*
-        \s*
+        (?P<environment_marker>.+)
     )?
     \]
     \s*
@@ -222,8 +200,6 @@ def guess_dependency(impl, req, version=None, bdep=None,
                 action = check_environment_marker_restrictions(
                     req,
                     req_d['environment_marker'],
-                    req_d['environment_marker_op'],
-                    req_d['environment_marker_value'],
                     impl)
                 if action is False:
                     return
@@ -322,7 +298,7 @@ def guess_dependency(impl, req, version=None, bdep=None,
     # return pname
 
 
-def check_environment_marker_restrictions(req, marker, op, value, impl):
+def check_environment_marker_restrictions(req, marker_str, impl):
     """Check wither we should include or skip a dependency based on its
     environment markers.
 
@@ -334,8 +310,9 @@ def check_environment_marker_restrictions(req, marker, op, value, impl):
         log.info('Ignoring environment markers for non-Python 3.x: %s', req)
         return False
 
-    # TODO: Replace with an AST that can handle complex logic
-    if ' or ' in value or ' and ' in value:
+    try:
+        marker, op, value = parse_environment_marker(marker_str)
+    except ComplexEnvironmentMarker:
         log.info('Ignoring complex environment marker: %s', req)
         return False
 
@@ -499,8 +476,6 @@ def parse_pydep(impl, fname, bdep=None, options=None,
                     env_action = check_environment_marker_restrictions(
                         line,
                         m.group('environment_marker'),
-                        m.group('environment_marker_op'),
-                        m.group('environment_marker_value'),
                         impl)
                 processed.append(line)
                 continue
