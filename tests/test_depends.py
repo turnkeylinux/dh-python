@@ -277,6 +277,7 @@ class TestEnvironmentMarkersDistInfo(DependenciesTestCase):
         'implementation_name_pypy': 'python3-implementation-name-pypy',
         'implementation_version_lt35': 'python3-implementation-version-lt35',
         'implementation_version_ge35': 'python3-implementation-version-ge35',
+        'invalid_marker': 'python3-invalid-marker',
         'extra_feature': 'python3-extra-feature',
         'extra_test': 'python3-extra-test',
         'complex_marker': 'python3-complex-marker',
@@ -345,6 +346,7 @@ class TestEnvironmentMarkersDistInfo(DependenciesTestCase):
                 "implementation_version < '3.5'",
             "Requires-Dist: implementation_version_ge35; "
                 "implementation_version >= '3.5'",
+            "Requires-Dist: invalid_marker; invalid_marker > '1'",
             "Requires-Dist: extra_feature; extra == 'feature'",
             "Requires-Dist: extra_test; extra == 'test'",
             "Requires-Dist: complex_marker; os_name != 'windows' "
@@ -506,6 +508,9 @@ class TestEnvironmentMarkersDistInfo(DependenciesTestCase):
         self.assertIn('python3-implementation-version-ge35 | python3 (<< 3.5)',
                       self.d.depends)
 
+    def test_ignores_invalid_marker(self):
+        self.assertNotInDepends('python3-invalid-marker')
+
     def test_depends_on_extra_feature_packages(self):
         self.assertIn('python3-extra-feature', self.d.depends)
 
@@ -605,6 +610,8 @@ class TestEnvironmentMarkersEggInfo(TestEnvironmentMarkersDistInfo):
             "implementation_version_lt35",
             "[:implementation_version >= '3.5']",
             "implementation_version_ge35",
+            "[:invalid_marker > '1']",
+            "invalid_marker",
             "[feature]",
             "extra_feature",
             "[test]",
