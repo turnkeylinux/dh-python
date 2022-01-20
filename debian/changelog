@@ -1,3 +1,9 @@
+dh-python (5.20220101~bpo11+1) bullseye-backports; urgency=medium
+
+  * Rebuild for bullseye-backports.
+
+ -- Stefano Rivera <stefanor@debian.org>  Wed, 19 Jan 2022 21:10:05 -0400
+
 dh-python (5.20220101) unstable; urgency=medium
 
   * Handle complex environment markers with both quote types.
