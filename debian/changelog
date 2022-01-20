@@ -1,11 +1,11 @@
-dh-python (5.20220102) UNRELEASED; urgency=medium
+dh-python (5.20220102) unstable; urgency=medium
 
   * Allow passing arguments to tox tests.
   * cmake plugin: Don't quote arguments that will be substituted (and quoted)
     by shell_command. (closes: 1003962)
   * Update pydist fallback database.
 
- -- Stefano Rivera <stefanor@debian.org>  Tue, 11 Jan 2022 15:27:54 -0400
+ -- Stefano Rivera <stefanor@debian.org>  Wed, 19 Jan 2022 21:21:08 -0400
 
 dh-python (5.20220101) unstable; urgency=medium
 
