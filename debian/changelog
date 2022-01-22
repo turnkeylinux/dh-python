@@ -1,3 +1,9 @@
+dh-python (5.20220102~bpo11+1) bullseye-backports; urgency=medium
+
+  * Rebuild for bullseye-backports.
+
+ -- Stefano Rivera <stefanor@debian.org>  Sat, 22 Jan 2022 08:44:14 -0400
+
 dh-python (5.20220102) unstable; urgency=medium
 
   * Allow passing arguments to tox tests.
