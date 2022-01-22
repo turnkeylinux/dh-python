@@ -35,7 +35,7 @@ class BuildSystem(Base):
     @shell_command
     def configure(self, context, args):
         return ('dh_auto_configure --buildsystem=cmake'
-                ' --builddirectory="{build_dir}" --'
+                ' --builddirectory={build_dir} --'
                 ' -DPYTHON_EXECUTABLE:FILEPATH=/usr/bin/{interpreter}'
                 ' -DPYTHON_LIBRARY:FILEPATH={interpreter.library_file}'
                 ' -DPYTHON_INCLUDE_DIR:PATH={interpreter.include_dir}'
@@ -44,19 +44,19 @@ class BuildSystem(Base):
     @shell_command
     def build(self, context, args):
         return ('dh_auto_build --buildsystem=cmake'
-                ' --builddirectory="{build_dir}"'
+                ' --builddirectory={build_dir}'
                 ' -- {args}')
 
     @shell_command
     def install(self, context, args):
         return ('dh_auto_install --buildsystem=cmake'
-                ' --builddirectory="{build_dir}"'
-                ' --destdir="{destdir}"'
+                ' --builddirectory={build_dir}'
+                ' --destdir={destdir}'
                 ' -- {args}')
 
     @shell_command
     @copy_test_files()
     def test(self, context, args):
         return ('dh_auto_test --buildsystem=cmake'
-                ' --builddirectory="{build_dir}"'
+                ' --builddirectory={build_dir}'
                 ' -- {args}')

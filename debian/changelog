@@ -1,3 +1,12 @@
+dh-python (5.20220102) unstable; urgency=medium
+
+  * Allow passing arguments to tox tests.
+  * cmake plugin: Don't quote arguments that will be substituted (and quoted)
+    by shell_command. (closes: 1003962)
+  * Update pydist fallback database.
+
+ -- Stefano Rivera <stefanor@debian.org>  Wed, 19 Jan 2022 21:21:08 -0400
+
 dh-python (5.20220101~bpo11+1) bullseye-backports; urgency=medium
 
   * Rebuild for bullseye-backports.
