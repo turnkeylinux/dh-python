@@ -1,3 +1,10 @@
+dh-python (5.20220103) UNRELEASED; urgency=medium
+
+  * dh_python3: Don't emit any warnings about unknown packages for modules
+    that we won't depend on. (closes: 1004378)
+
+ -- Stefano Rivera <stefanor@debian.org>  Thu, 27 Jan 2022 09:37:46 -0400
+
 dh-python (5.20220102) unstable; urgency=medium
 
   * Allow passing arguments to tox tests.

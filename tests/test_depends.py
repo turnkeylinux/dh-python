@@ -1,4 +1,5 @@
 import os
+import logging
 import platform
 import unittest
 from copy import deepcopy
@@ -85,6 +86,7 @@ class DependenciesTestCase(unittest.TestCase):
     requires = {}
     dist_info_metadata = {}
     options = FakeOptions()
+    parse = True
 
     def setUp(self):
         self.d = Dependencies(self.pkg, self.impl)
@@ -116,7 +118,10 @@ class DependenciesTestCase(unittest.TestCase):
         cleanup = prime_pydist(self.impl, self.pydist)
         self.addCleanup(cleanup)
 
-        self.d.parse(stats, self.options)
+        if self.parse:
+            self.d.parse(stats, self.options)
+        else:
+            self.prepared_stats = stats
 
     def assertNotInDepends(self, pkg):
         """Assert that pkg doesn't appear *anywhere* in self.d.depends"""
@@ -653,3 +658,49 @@ class TestEnvironmentMarkers27EggInfo(DependenciesTestCase):
 
     def test_ignores_pyversion_packages(self):
         self.assertNotInDepends('python-python-version-ge26')
+
+
+class TestIgnoresUnusedModulesDistInfo(DependenciesTestCase):
+    options = FakeOptions(guess_deps=True, depends_section=['feature'])
+    dist_info_metadata = {
+        'debian/foo/usr/lib/python3/dist-packages/foo.dist-info/METADATA': (
+            "Requires-Dist: unusued-complex-module ; "
+                "(sys_platform == \"darwin\") and extra == 'nativelib'",
+            "Requires-Dist: unused-win-module ; (sys_platform == \"win32\")",
+            "Requires-Dist: unused-extra-module ; extra == 'unused'",
+        ),
+    }
+    parse = False
+
+    def test_ignores_unused_dependencies(self):
+        if not hasattr(self, 'assertLogs'):
+            raise unittest.SkipTest("Requires Python >= 3.4")
+        with self.assertLogs(logger='dhpython', level=logging.INFO) as logs:
+            self.d.parse(self.prepared_stats, self.options)
+        for line in logs.output:
+            self.assertTrue(
+                line.startswith(
+                    'INFO:dhpython:Ignoring complex environment marker'),
+                'Expecting only complex environment marker messages, but '
+                'got: {}'.format(line))
+
+
+class TestIgnoresUnusedModulesEggInfo(DependenciesTestCase):
+    options = FakeOptions(guess_deps=True, depends_section=['feature'])
+    requires = {
+        'debian/foo/usr/lib/python3/dist-packages/foo.egg-info/requires.txt': (
+            "[nativelib:(sys_platform == 'darwin')]",
+            "unusued-complex-module",
+            "[:sys_platform == 'win32']",
+            "unused-win-module",
+            "[unused]",
+            "unused-extra-module",
+        )
+    }
+    parse = False
+
+    def test_ignores_unused_dependencies(self):
+        if not hasattr(self, 'assertNoLogs'):
+            raise unittest.SkipTest("Requires Python >= 3.10")
+        with self.assertNoLogs(logger='dhpython', level=logging.INFO):
+            self.d.parse(self.prepared_stats, self.options)
