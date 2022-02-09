@@ -52,7 +52,6 @@ Depends:
  python3-build (>> 0.7~),
  python3-installer,
  python3-tomli,
-Provides: dh-python-pep517
 Description: Debian helper tools for packaging Python libraries using PEP517
  This metapackage depends on the components necessary for building packages
  with the generic PEP517 build plugin.
