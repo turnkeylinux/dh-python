@@ -32,7 +32,7 @@ class MergeWheelTestCase(TestCase):
             self.assertMultiLineEqual(contents, f.read())
 
 
-class SimpleCombinationTestCase(MergeWheelTestCase):
+class SimpleCombinationTest(MergeWheelTestCase):
     files = {
         'a': ('abc', 'def'),
         'b': ('abc', 'ghi'),
@@ -46,7 +46,7 @@ class SimpleCombinationTestCase(MergeWheelTestCase):
         self.assertFileContents(self.b, ('abc', 'ghi', 'def'))
 
 
-class MergeTagsTestCase(MergeWheelTestCase):
+class MergeTagsTest(MergeWheelTestCase):
     files = {
         'a': ('foo', 'Tag: A'),
         'b': ('foo', 'Tag: B'),
@@ -57,7 +57,7 @@ class MergeTagsTestCase(MergeWheelTestCase):
         self.assertFileContents(self.b, ('foo', 'Tag: B', 'Tag: A'))
 
 
-class UpdateRecordTestCase(MergeWheelTestCase):
+class UpdateRecordTest(MergeWheelTestCase):
     files = {
         'dist-info/RECORD': ('dist-info/FOO,sha256=b5bb9d8014a0f9b1d61e21e796d7'
                              '8dccdf1352f23cd32812f4850b878ae4944c,4',),
