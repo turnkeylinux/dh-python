@@ -9,6 +9,8 @@ from tempfile import TemporaryDirectory
 from dhpython.depends import Dependencies
 from dhpython.version import Version
 
+from tests.common import FakeOptions
+
 
 def pep386(d):
     """Mark all pydist entries as being PEP386"""
@@ -26,25 +28,6 @@ def py27(d):
             d[k] = {'dependency': v}
             d[k].setdefault('versions', {Version('2.7')})
     return d
-
-
-class FakeOptions:
-    def __init__(self, **kwargs):
-        opts = {
-            'depends': (),
-            'depends_section': (),
-            'guess_deps': False,
-            'recommends': (),
-            'recommends_section': (),
-            'requires': (),
-            'suggests': (),
-            'suggests_section': (),
-            'vrange': None,
-            'accept_upstream_versions': False,
-        }
-        opts.update(kwargs)
-        for k, v in opts.items():
-            setattr(self, k, v)
 
 
 def prime_pydist(impl, pydist):
