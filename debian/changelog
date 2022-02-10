@@ -1,8 +1,12 @@
 dh-python (5.20220103) UNRELEASED; urgency=medium
 
+  [ Stefano Rivera ]
   * dh_python3: Don't emit any warnings about unknown packages for modules
     that we won't depend on. (closes: 1004378)
   * Drop Provides for dh-python-pep517, replaced by pybuild-plugin-pyproject.
+
+  [ Scott Kitterman ]
+  * Update source lintian overrides
 
  -- Stefano Rivera <stefanor@debian.org>  Thu, 27 Jan 2022 09:37:46 -0400
 
