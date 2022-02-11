@@ -398,11 +398,11 @@ def check_environment_marker_restrictions(req, marker_str, impl):
         elif op == '<=':
             return '| python3 (>> {})'.format(next_ver)
         elif op == '>=':
-            if int_ver < [3]:
+            if int_ver < [3, 0, 0]:
                 return True
             return '| python3 (<< {})'.format(env_ver)
         elif op == '>':
-            if int_ver < [3]:
+            if int_ver < [3, 0, 0]:
                 return True
             return '| python3 (<< {})'.format(next_ver)
         elif op in ('==', '==='):

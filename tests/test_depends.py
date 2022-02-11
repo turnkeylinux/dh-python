@@ -239,6 +239,8 @@ class TestEnvironmentMarkersDistInfo(DependenciesTestCase):
         'platform_system_windows': 'python3-platform-system-windows',
         'platform_version_lt1': 'python3-platform-version-lt1',
         'platform_version_ge1': 'python3-platform-version-ge1',
+        'python_version_ge3': 'python3-python-version-ge3',
+        'python_version_gt3': 'python3-python-version-gt3',
         'python_version_lt3': 'python3-python-version-lt3',
         'python_version_lt30': 'python3-python-version-lt30',
         'python_version_lt35': 'python3-python-version-lt35',
@@ -294,6 +296,8 @@ class TestEnvironmentMarkersDistInfo(DependenciesTestCase):
                 "platform_system == 'Windows'",
             "Requires-Dist: platform_version_lt1; platform_version < '1'",
             "Requires-Dist: platform_version_ge1; platform_version >= '1'",
+            "Requires-Dist: python_version_ge3; python_version >= '3'",
+            "Requires-Dist: python_version_gt3; python_version > '3'",
             "Requires-Dist: python_version_lt3; python_version < '3'",
             "Requires-Dist: python_version_lt30; python_version < '3.0'",
             "Requires-Dist: python_version_lt35; python_version < '3.5'",
@@ -399,6 +403,12 @@ class TestEnvironmentMarkersDistInfo(DependenciesTestCase):
 
     def test_skips_py_version_lt_3_packages(self):
         self.assertNotInDepends('python3-python-version-lt3')
+
+    def test_elides_py_version_ge_3(self):
+        self.assertIn('python3-python-version-ge3', self.d.depends)
+
+    def test_elides_py_version_gt_3(self):
+        self.assertIn('python3-python-version-gt3', self.d.depends)
 
     def test_skips_py_version_lt_30_packages(self):
         self.assertNotInDepends('python3-python-version-lt30')
@@ -546,6 +556,10 @@ class TestEnvironmentMarkersEggInfo(TestEnvironmentMarkersDistInfo):
             "platform_version_lt1",
             "[:platform_version >= '1']",
             "platform_version_ge1",
+            "[:python_version >= '3']",
+            "python_version_ge3",
+            "[:python_version > '3']",
+            "python_version_gt3",
             "[:python_version < '3']",
             "python_version_lt3",
             "[:python_version < '3.0']",
