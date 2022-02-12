@@ -6,6 +6,8 @@ dh-python (5.20220103) UNRELEASED; urgency=medium
   * Drop Provides for dh-python-pep517, replaced by pybuild-plugin-pyproject.
   * Simplify generated dependencies for "; python_version > '3'" style
     dependencies.
+  * pyproject plugin: Export FLIT_NO_NETWORK=1 when building, to disable any
+    attempts by flit to download build-dependencies.
 
   [ Scott Kitterman ]
   * Update source lintian overrides

@@ -106,6 +106,7 @@ class BuildSystem(Base):
         """ build a wheel using the PEP517 builder defined by upstream """
         log.info('Building wheel for %s with "build" module',
                  args['interpreter'])
+        args['ENV']['FLIT_NO_NETWORK'] = '1'
         return ('{interpreter} -m build '
                 '--skip-dependency-check --no-isolation --wheel '
                 '--outdir ' + args['home_dir'] +
