@@ -10,6 +10,9 @@ dh-python (5.20220103) UNRELEASED; urgency=medium
   [ Scott Kitterman ]
   * Update source lintian overrides
 
+  [ Debian Janitor ]
+  * Add missing ${misc:Depends} to Depends for pybuild-plugin-pyproject.
+
  -- Stefano Rivera <stefanor@debian.org>  Thu, 27 Jan 2022 09:37:46 -0400
 
 dh-python (5.20220102) unstable; urgency=medium
