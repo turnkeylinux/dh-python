@@ -12,6 +12,7 @@ dh-python (5.20220103) UNRELEASED; urgency=medium
 
   [ Debian Janitor ]
   * Add missing ${misc:Depends} to Depends for pybuild-plugin-pyproject.
+  * Fix day-of-week for changelog entry 1.20130807-1.
 
  -- Stefano Rivera <stefanor@debian.org>  Thu, 27 Jan 2022 09:37:46 -0400
 
@@ -838,7 +839,7 @@ dh-python (1.20130807-1) unstable; urgency=low
     - add --test-nose and --test-pytest options (can be enabled also via
       PYBUILD_TEST_NOSE=1 or PYBUILD_TEST_PYTEST=1)
 
- -- Piotr Ożarowski <piotr@debian.org>  Thu, 07 Aug 2013 23:59:37 +0200
+ -- Piotr Ożarowski <piotr@debian.org>  Wed, 07 Aug 2013 23:59:37 +0200
 
 dh-python (1.20130728-1) unstable; urgency=low
 
