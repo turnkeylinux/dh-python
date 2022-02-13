@@ -1,4 +1,4 @@
-dh-python (5.20220120) UNRELEASED; urgency=medium
+dh-python (5.20220213) unstable; urgency=medium
 
   [ Stefano Rivera ]
   * Update pydist fallback database.
@@ -24,7 +24,7 @@ dh-python (5.20220120) UNRELEASED; urgency=medium
   * Add missing ${misc:Depends} to Depends for pybuild-plugin-pyproject.
   * Fix day-of-week for changelog entry 1.20130807-1.
 
- -- Stefano Rivera <stefanor@debian.org>  Thu, 27 Jan 2022 09:37:46 -0400
+ -- Stefano Rivera <stefanor@debian.org>  Sun, 13 Feb 2022 19:33:18 -0400
 
 dh-python (5.20220119) unstable; urgency=medium
 
