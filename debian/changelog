@@ -14,6 +14,8 @@ dh-python (5.20220120) UNRELEASED; urgency=medium
     it.
   * Consider DH_OPTIONS as prepended to command line options, not appended.
     (closes: 949285)
+  * Support DEB_BUILD_OPTIONS=terse, thanks Matthijs Kooijman.
+    (closes: 945945)
 
   [ Scott Kitterman ]
   * Update source lintian overrides
