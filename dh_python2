@@ -345,8 +345,8 @@ def main():
     # ignore some debhelper options:
     parser.add_option('-O', help=SUPPRESS_HELP)
 
-    options, args = parser.parse_args(sys.argv[1:] +
-                                      os.environ.get('DH_OPTIONS', '').split())
+    options, args = parser.parse_args(os.environ.get('DH_OPTIONS', '').split()
+                                      + sys.argv[1:])
     # regexpr option type is not used so lets check patterns here
     for pattern in options.regexpr or []:
         # fail now rather than at runtime
