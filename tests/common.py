@@ -4,6 +4,7 @@ class FakeOptions:
             'depends': (),
             'depends_section': (),
             'guess_deps': False,
+            'no_ext_rename': False,
             'recommends': (),
             'recommends_section': (),
             'requires': (),
