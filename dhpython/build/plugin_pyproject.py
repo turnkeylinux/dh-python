@@ -157,7 +157,12 @@ class BuildSystem(Base):
     def install(self, context, args):
         log.info('Copying package built for %s to destdir',
                  args['interpreter'])
-        paths = sysconfig.get_paths()
+        try:
+            paths = sysconfig.get_paths(scheme='deb_system')
+        except KeyError:
+            # Debian hasn't patched sysconfig schemes until 3.10
+            # TODO: Introduce a version check once sysconfig is patched.
+            paths = sysconfig.get_paths(scheme='posix_prefix')
 
         # start by copying the scripts
         for script_dir in Path(args['build_dir']).glob('scripts-*'):

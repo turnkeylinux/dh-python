@@ -1,3 +1,11 @@
+dh-python (5.20220214) UNRELEASED; urgency=medium
+
+  * pybuild plugin: Explicitly unpack wheels using the "deb_system" sysconfig
+    scheme, allowing python3.10 to change the default sysconfig scheme to
+    "posix_local". (LP: #1960608)
+
+ -- Stefano Rivera <stefanor@debian.org>  Tue, 15 Feb 2022 19:53:08 -0400
+
 dh-python (5.20220213) unstable; urgency=medium
 
   [ Stefano Rivera ]
