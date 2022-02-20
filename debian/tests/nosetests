@@ -5,5 +5,5 @@ set -eu
 nosetests3 /usr/share/dh-python/dhpython --with-doctest -v
 
 cp -r tests "$AUTOPKGTEST_TMP"
-cd "$AUTOPKGTEST_TMP/tests"
-PYTHONPATH=/usr/share/dh-python nosetests3 -v
+cd "$AUTOPKGTEST_TMP"
+PYTHONPATH=/usr/share/dh-python nosetests3 -v tests

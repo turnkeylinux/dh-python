@@ -1,4 +1,5 @@
 import os
+import logging
 import platform
 import unittest
 from copy import deepcopy
@@ -7,6 +8,8 @@ from tempfile import TemporaryDirectory
 
 from dhpython.depends import Dependencies
 from dhpython.version import Version
+
+from tests.common import FakeOptions
 
 
 def pep386(d):
@@ -25,25 +28,6 @@ def py27(d):
             d[k] = {'dependency': v}
             d[k].setdefault('versions', {Version('2.7')})
     return d
-
-
-class FakeOptions:
-    def __init__(self, **kwargs):
-        opts = {
-            'depends': (),
-            'depends_section': (),
-            'guess_deps': False,
-            'recommends': (),
-            'recommends_section': (),
-            'requires': (),
-            'suggests': (),
-            'suggests_section': (),
-            'vrange': None,
-            'accept_upstream_versions': False,
-        }
-        opts.update(kwargs)
-        for k, v in opts.items():
-            setattr(self, k, v)
 
 
 def prime_pydist(impl, pydist):
@@ -85,6 +69,7 @@ class DependenciesTestCase(unittest.TestCase):
     requires = {}
     dist_info_metadata = {}
     options = FakeOptions()
+    parse = True
 
     def setUp(self):
         self.d = Dependencies(self.pkg, self.impl)
@@ -116,7 +101,10 @@ class DependenciesTestCase(unittest.TestCase):
         cleanup = prime_pydist(self.impl, self.pydist)
         self.addCleanup(cleanup)
 
-        self.d.parse(stats, self.options)
+        if self.parse:
+            self.d.parse(stats, self.options)
+        else:
+            self.prepared_stats = stats
 
     def assertNotInDepends(self, pkg):
         """Assert that pkg doesn't appear *anywhere* in self.d.depends"""
@@ -251,6 +239,8 @@ class TestEnvironmentMarkersDistInfo(DependenciesTestCase):
         'platform_system_windows': 'python3-platform-system-windows',
         'platform_version_lt1': 'python3-platform-version-lt1',
         'platform_version_ge1': 'python3-platform-version-ge1',
+        'python_version_ge3': 'python3-python-version-ge3',
+        'python_version_gt3': 'python3-python-version-gt3',
         'python_version_lt3': 'python3-python-version-lt3',
         'python_version_lt30': 'python3-python-version-lt30',
         'python_version_lt35': 'python3-python-version-lt35',
@@ -306,6 +296,8 @@ class TestEnvironmentMarkersDistInfo(DependenciesTestCase):
                 "platform_system == 'Windows'",
             "Requires-Dist: platform_version_lt1; platform_version < '1'",
             "Requires-Dist: platform_version_ge1; platform_version >= '1'",
+            "Requires-Dist: python_version_ge3; python_version >= '3'",
+            "Requires-Dist: python_version_gt3; python_version > '3'",
             "Requires-Dist: python_version_lt3; python_version < '3'",
             "Requires-Dist: python_version_lt30; python_version < '3.0'",
             "Requires-Dist: python_version_lt35; python_version < '3.5'",
@@ -411,6 +403,12 @@ class TestEnvironmentMarkersDistInfo(DependenciesTestCase):
 
     def test_skips_py_version_lt_3_packages(self):
         self.assertNotInDepends('python3-python-version-lt3')
+
+    def test_elides_py_version_ge_3(self):
+        self.assertIn('python3-python-version-ge3', self.d.depends)
+
+    def test_elides_py_version_gt_3(self):
+        self.assertIn('python3-python-version-gt3', self.d.depends)
 
     def test_skips_py_version_lt_30_packages(self):
         self.assertNotInDepends('python3-python-version-lt30')
@@ -558,6 +556,10 @@ class TestEnvironmentMarkersEggInfo(TestEnvironmentMarkersDistInfo):
             "platform_version_lt1",
             "[:platform_version >= '1']",
             "platform_version_ge1",
+            "[:python_version >= '3']",
+            "python_version_ge3",
+            "[:python_version > '3']",
+            "python_version_gt3",
             "[:python_version < '3']",
             "python_version_lt3",
             "[:python_version < '3.0']",
@@ -653,3 +655,49 @@ class TestEnvironmentMarkers27EggInfo(DependenciesTestCase):
 
     def test_ignores_pyversion_packages(self):
         self.assertNotInDepends('python-python-version-ge26')
+
+
+class TestIgnoresUnusedModulesDistInfo(DependenciesTestCase):
+    options = FakeOptions(guess_deps=True, depends_section=['feature'])
+    dist_info_metadata = {
+        'debian/foo/usr/lib/python3/dist-packages/foo.dist-info/METADATA': (
+            "Requires-Dist: unusued-complex-module ; "
+                "(sys_platform == \"darwin\") and extra == 'nativelib'",
+            "Requires-Dist: unused-win-module ; (sys_platform == \"win32\")",
+            "Requires-Dist: unused-extra-module ; extra == 'unused'",
+        ),
+    }
+    parse = False
+
+    def test_ignores_unused_dependencies(self):
+        if not hasattr(self, 'assertLogs'):
+            raise unittest.SkipTest("Requires Python >= 3.4")
+        with self.assertLogs(logger='dhpython', level=logging.INFO) as logs:
+            self.d.parse(self.prepared_stats, self.options)
+        for line in logs.output:
+            self.assertTrue(
+                line.startswith(
+                    'INFO:dhpython:Ignoring complex environment marker'),
+                'Expecting only complex environment marker messages, but '
+                'got: {}'.format(line))
+
+
+class TestIgnoresUnusedModulesEggInfo(DependenciesTestCase):
+    options = FakeOptions(guess_deps=True, depends_section=['feature'])
+    requires = {
+        'debian/foo/usr/lib/python3/dist-packages/foo.egg-info/requires.txt': (
+            "[nativelib:(sys_platform == 'darwin')]",
+            "unusued-complex-module",
+            "[:sys_platform == 'win32']",
+            "unused-win-module",
+            "[unused]",
+            "unused-extra-module",
+        )
+    }
+    parse = False
+
+    def test_ignores_unused_dependencies(self):
+        if not hasattr(self, 'assertNoLogs'):
+            raise unittest.SkipTest("Requires Python >= 3.10")
+        with self.assertNoLogs(logger='dhpython', level=logging.INFO):
+            self.d.parse(self.prepared_stats, self.options)

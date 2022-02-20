@@ -186,28 +186,27 @@ def guess_dependency(impl, req, version=None, bdep=None,
                  'or your upstream author to fix requires.txt')
         raise Exception('requirement is not valid: %s' % req)
     req_d = req_d.groupdict()
+
+    env_marker_alts = ''
+    if req_d['environment_marker']:
+        action = check_environment_marker_restrictions(
+            req,
+            req_d['environment_marker'],
+            impl)
+        if action is False:
+            return
+        elif action is True:
+            pass
+        else:
+            env_marker_alts = ' ' + action
+
     name = req_d['name']
     details = data.get(name.lower())
-    env_marker_alts = ''
     if details:
         for item in details:
             if version and version not in item.get('versions', version):
                 # rule doesn't match version, try next one
                 continue
-
-            env_marker_alts = ''
-            if req_d['environment_marker']:
-                action = check_environment_marker_restrictions(
-                    req,
-                    req_d['environment_marker'],
-                    impl)
-                if action is False:
-                    return
-                elif action is True:
-                    pass
-                else:
-                    env_marker_alts = ' ' + action
-
             if not item['dependency']:
                 return  # this requirement should be ignored
             if item['dependency'].endswith(')'):
@@ -399,11 +398,11 @@ def check_environment_marker_restrictions(req, marker_str, impl):
         elif op == '<=':
             return '| python3 (>> {})'.format(next_ver)
         elif op == '>=':
-            if int_ver < [3]:
+            if int_ver < [3, 0, 0]:
                 return True
             return '| python3 (<< {})'.format(env_ver)
         elif op == '>':
-            if int_ver < [3]:
+            if int_ver < [3, 0, 0]:
                 return True
             return '| python3 (<< {})'.format(next_ver)
         elif op in ('==', '==='):
@@ -492,10 +491,10 @@ def parse_pydep(impl, fname, bdep=None, options=None,
             else:
                 result_key = 'depends'
 
-            dependency = guess_deps(req=line)
-            if env_action is False:
-                dependency = None
-            elif dependency and isinstance(env_action, str):
+            dependency = None
+            if env_action:
+                dependency = guess_deps(req=line)
+            if dependency and isinstance(env_action, str):
                 dependency = ', '.join(
                     part.strip() + ' ' + env_action
                     for part in dependency.split(','))
@@ -533,6 +532,7 @@ def parse_requires_dist(impl, fname, bdep=None, options=None, depends_sec=None,
     requires = metadata.get_all('Requires-Dist', [])
     for req in requires:
         m = EXTRA_RE.search(req)
+        result_key = 'depends'
         if m:
             section = m.group('section')
             if section:
@@ -544,8 +544,6 @@ def parse_requires_dist(impl, fname, bdep=None, options=None, depends_sec=None,
                     result_key = 'suggests'
                 else:
                     continue
-        else:
-            result_key = 'depends'
         dependency = guess_deps(req=req)
         if dependency:
             result[result_key].append(dependency)

@@ -38,7 +38,6 @@ except ModuleNotFoundError:
     SchemeDictionaryDestination = WheelFile = install = None
 
 from dhpython.build.base import Base, shell_command
-from dhpython.debhelper import DebHelper, build_options
 
 log = logging.getLogger('dhpython')
 
@@ -64,11 +63,6 @@ class BuildSystem(Base):
         result = super().detect(context)
         # Temporarily reduce the threshold while we're in beta
         result -= 20
-
-        # LEGACY: Explicitly requested via the old Build-Dep?
-        dh = DebHelper(build_options())
-        if 'dh-python-pep517' in dh.build_depends:
-            return 90
 
         try:
             with open('pyproject.toml', 'rb') as f:
@@ -112,6 +106,7 @@ class BuildSystem(Base):
         """ build a wheel using the PEP517 builder defined by upstream """
         log.info('Building wheel for %s with "build" module',
                  args['interpreter'])
+        args['ENV']['FLIT_NO_NETWORK'] = '1'
         return ('{interpreter} -m build '
                 '--skip-dependency-check --no-isolation --wheel '
                 '--outdir ' + args['home_dir'] +
@@ -162,7 +157,12 @@ class BuildSystem(Base):
     def install(self, context, args):
         log.info('Copying package built for %s to destdir',
                  args['interpreter'])
-        paths = sysconfig.get_paths()
+        try:
+            paths = sysconfig.get_paths(scheme='deb_system')
+        except KeyError:
+            # Debian hasn't patched sysconfig schemes until 3.10
+            # TODO: Introduce a version check once sysconfig is patched.
+            paths = sysconfig.get_paths(scheme='posix_prefix')
 
         # start by copying the scripts
         for script_dir in Path(args['build_dir']).glob('scripts-*'):

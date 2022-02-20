@@ -25,7 +25,9 @@ import os
 import re
 import sys
 from filecmp import cmp as cmpfile
-from os.path import lexists, exists, getsize, isdir, islink, join, realpath, split, splitext
+from glob import glob
+from os.path import (lexists, exists, getsize, isdir, islink, join, realpath,
+                     relpath, split, splitext)
 from shutil import rmtree
 from stat import ST_MODE, S_IXUSR, S_IXGRP, S_IXOTH
 from dhpython import MULTIARCH_DIR_TPL
@@ -95,11 +97,21 @@ def share_files(srcdir, dstdir, interpreter, options):
             if version and version is not True:
                 fpath1 = Scan.rename_ext(fpath1, interpreter, version)
                 i = split(fpath1)[-1]
-        if srcdir.endswith(".dist-info") and (
-                i == 'LICENSE' or i.startswith('LICENSE.')):
-            os.remove(fpath1)
-            cleanup_actions.append((remove_from_RECORD, (i,)))
-            continue
+        if srcdir.endswith(".dist-info"):
+            if i == 'LICENSE' or i.startswith('LICENSE.'):
+                os.remove(fpath1)
+                cleanup_actions.append((remove_from_RECORD, ([i],)))
+                continue
+            elif isdir(fpath1) and i == 'license_files':
+                cleanup_actions.append((
+                    remove_from_RECORD,
+                    ([
+                        relpath(license, srcdir)
+                        for license in glob(join(srcdir, i, '**'))
+                    ],)
+                ))
+                rmtree(fpath1)
+                continue
         fpath2 = join(dstdir, i)
         if not isdir(fpath1) and not exists(fpath2):
             # do not rename directories here - all .so files have to be renamed first
@@ -235,10 +247,16 @@ def remove_from_RECORD(distdir, files):
     names = [join(parent_dir, name) for name in files]
     lines = []
     with open(record) as fh:
-        lines = [line for line in fh.readlines()
-                 if not line.split(',', 1)[0] in names]
+        lines = fh.readlines()
+
+    filtered = [line for line in lines if not line.split(',', 1)[0] in names]
+
+    if lines == filtered:
+        log.warn("Unable to remove %r from RECORD in %s, not found",
+                 files, distdir)
+
     with open(record, 'wt') as fh:
-        fh.writelines(sorted(lines))
+        fh.writelines(sorted(filtered))
 
 
 class Scan:

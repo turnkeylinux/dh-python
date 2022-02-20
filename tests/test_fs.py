@@ -2,8 +2,11 @@ from tempfile import TemporaryDirectory
 from pathlib import Path
 from unittest import TestCase
 
+from dhpython.interpreter import Interpreter
 from dhpython.fs import (
-    fix_merged_RECORD, merge_RECORD, merge_WHEEL, missing_lines)
+    fix_merged_RECORD, merge_RECORD, merge_WHEEL, missing_lines, share_files)
+
+from tests.common import FakeOptions
 
 
 class MergeWheelTestCase(TestCase):
@@ -32,7 +35,7 @@ class MergeWheelTestCase(TestCase):
             self.assertMultiLineEqual(contents, f.read())
 
 
-class SimpleCombinationTestCase(MergeWheelTestCase):
+class SimpleCombinationTest(MergeWheelTestCase):
     files = {
         'a': ('abc', 'def'),
         'b': ('abc', 'ghi'),
@@ -46,7 +49,7 @@ class SimpleCombinationTestCase(MergeWheelTestCase):
         self.assertFileContents(self.b, ('abc', 'ghi', 'def'))
 
 
-class MergeTagsTestCase(MergeWheelTestCase):
+class MergeTagsTest(MergeWheelTestCase):
     files = {
         'a': ('foo', 'Tag: A'),
         'b': ('foo', 'Tag: B'),
@@ -57,7 +60,7 @@ class MergeTagsTestCase(MergeWheelTestCase):
         self.assertFileContents(self.b, ('foo', 'Tag: B', 'Tag: A'))
 
 
-class UpdateRecordTestCase(MergeWheelTestCase):
+class UpdateRecordTest(MergeWheelTestCase):
     files = {
         'dist-info/RECORD': ('dist-info/FOO,sha256=b5bb9d8014a0f9b1d61e21e796d7'
                              '8dccdf1352f23cd32812f4850b878ae4944c,4',),
@@ -72,3 +75,41 @@ class UpdateRecordTestCase(MergeWheelTestCase):
             'dist-info/WHEEL,sha256=447fb61fa39a067229e1cce8fc0953bfced53eac85d'
             '1844f5940f51c1fcba725,6',
         ))
+
+
+class ShareFilesTestCase(MergeWheelTestCase):
+    impl = 'cpython3'
+    options = {}
+
+    def setUp(self):
+        super().setUp()
+        self.destdir = TemporaryDirectory()
+        self.addCleanup(self.destdir.cleanup)
+        share_files(self.tempdir.name, self.destdir.name,
+                    Interpreter(self.impl),
+                    FakeOptions(**self.options))
+
+    def destPath(self, name):
+        return Path(self.destdir.name) / name
+
+
+class HatchlingLicenseTest(ShareFilesTestCase):
+    files = {
+        'foo.dist-info/license_files/LICENSE.txt': ('foo'),
+        'foo.dist-info/RECORD': (
+            'foo.dist-info/license_files/LICENSE.txt,sha256=2c26b46b68ffc68ff99'
+            'b453c1d30413413422d706483bfa0f98a5e886266e7ae,4',
+            'foo.dist-info/WHEEL,sha256=447fb61fa39a067229e1cce8fc0953bfced53ea'
+            'c85d1844f5940f51c1fcba725,6'),
+        'foo.dist-info/WHEEL': ('foo'),
+    }
+
+    def test_removes_license_files(self):
+        self.assertFalse(
+            self.destPath('foo.dist-info/license_files/LICENSE.txt').exists())
+
+    def test_removes_license_files_from_record(self):
+        print("Checking", self.destPath('foo.dist-info/RECORD'))
+        self.assertFileContents(self.destPath('foo.dist-info/RECORD'),
+            'foo.dist-info/WHEEL,sha256=447fb61fa39a067229e1cce8fc0953bfced53ea'
+            'c85d1844f5940f51c1fcba725,6\n')

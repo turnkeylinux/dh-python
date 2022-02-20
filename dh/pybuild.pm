@@ -10,7 +10,7 @@ package Debian::Debhelper::Buildsystem::pybuild;
 use strict;
 use Dpkg::Control;
 use Dpkg::Changelog::Debian;
-use Debian::Debhelper::Dh_Lib qw(error doit);
+use Debian::Debhelper::Dh_Lib qw(%dh error doit);
 use base 'Debian::Debhelper::Buildsystem';
 
 sub DESCRIPTION {
@@ -103,6 +103,10 @@ sub pybuild_commands {
 	if (not grep {$_ eq '--dir'} @options and $dir ne '.') {
 		# if --dir is not passed, PYBUILD_DIR can be used
 		push @options, '--dir', $dir;
+	}
+
+	if (not grep {$_ eq '--verbose'} @options and $dh{QUIET}) {
+		push @options, '--quiet';
 	}
 
 	my @deps;
