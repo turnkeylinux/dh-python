@@ -1,3 +1,9 @@
+dh-python (5.20220215~bpo11+1) bullseye-backports; urgency=medium
+
+  * Rebuild for bullseye-backports.
+
+ -- Stefano Rivera <stefanor@debian.org>  Sat, 19 Feb 2022 20:34:24 -0400
+
 dh-python (5.20220215) unstable; urgency=medium
 
   * pybuild plugin: Explicitly unpack wheels using the "deb_system" sysconfig
