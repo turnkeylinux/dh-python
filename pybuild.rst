@@ -105,6 +105,11 @@ TESTS
     --test-tox
         use tox command in test step, remember to add tox
         to Build-Depends. Requires tox.ini file
+    --test-custom
+	use a custom command in the test step. The full test command is then
+	specified with `--test-args` or by setting the `PYBUILD_TEST_ARGS`
+	environment variable. Remember to add any needed packages to run the
+	tests to Build-Depends.
 
 
 testfiles

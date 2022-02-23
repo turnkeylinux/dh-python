@@ -224,6 +224,8 @@ class Base:
             if exists(pydistutils_cfg):
                 remove(pydistutils_cfg)
             return 'cd {build_dir}; tox -c {dir}/tox.ini --sitepackages -e py{version.major}{version.minor} {args}'
+        elif self.cfg.test_custom:
+            return 'cd {build_dir}; {args}'
         elif args['version'] == '2.7' or args['version'] >> '3.1' or args['interpreter'] == 'pypy':
             return 'cd {build_dir}; {interpreter} -m unittest discover -v {args}'
 
