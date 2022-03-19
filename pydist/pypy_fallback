@@ -6,7 +6,7 @@ ipaddress pypy-ipaddress
 packaging pypy-packaging
 pretend pypy-pretend
 pyasn1 pypy-pyasn1
-pyparsing pypy-pyparsing
+pyparsing pypy-pyparsing2
 rawkit pypy-rawkit
 scandir pypy-scandir
 six pypy-six

@@ -1,3 +1,9 @@
+dh-python (5.20220216) UNRELEASED; urgency=medium
+
+  * Refresh pydist.
+
+ -- Stefano Rivera <stefanor@debian.org>  Fri, 18 Mar 2022 21:24:01 -0400
+
 dh-python (5.20220215) unstable; urgency=medium
 
   * pybuild plugin: Explicitly unpack wheels using the "deb_system" sysconfig

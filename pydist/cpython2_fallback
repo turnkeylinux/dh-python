@@ -2,7 +2,6 @@ Arriero arriero
 DisplayCAL displaycal
 Pillow python-pil
 Pmw python-pmw
-Rivet python-rivet
 VirtualMailManager vmm
 argparse python (>= 2.7) | python-argparse
 cinfony python-cinfony
@@ -18,6 +17,7 @@ nemu python-nemu
 neuroshare python-neuroshare
 nglister nglister
 pil python-pil
+pip python-pip
 postnews postnews
 python python
 python_passfd python-passfd
