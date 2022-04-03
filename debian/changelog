@@ -2,6 +2,8 @@ dh-python (5.20220216) UNRELEASED; urgency=medium
 
   * Refresh pydist.
   * Replace which with command -v in autoscripts, thanks Diederik de Haas.
+  * Add support for --test-custom/PYBUILD_TEST_CUSTOM. Thanks, Antonio
+    Terceiro!
 
  -- Stefano Rivera <stefanor@debian.org>  Fri, 18 Mar 2022 21:24:01 -0400
 
