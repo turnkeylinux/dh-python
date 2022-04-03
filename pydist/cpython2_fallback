@@ -8,14 +8,12 @@ cinfony python-cinfony
 dvcs_autosync dvcs-autosync
 gjots2 gjots2
 grokmirror grokmirror
-hgsubversion hgsubversion
 keepkey python-keepkey
 live_wrapper live-wrapper
 mini_buildd python-mini-buildd
 mozilla_devscripts mozilla-devscripts
 nemu python-nemu
 neuroshare python-neuroshare
-nglister nglister
 pil python-pil
 pip python-pip
 postnews postnews
