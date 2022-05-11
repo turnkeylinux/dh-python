@@ -5,6 +5,7 @@ DI=debian/python3-foo/usr/lib/python3/dist-packages/foo-0.1.dist-info
 
 check:
 	test -f debian/python3-foo/usr/lib/python3/dist-packages/foo/__init__.py
+	test -f debian/python3-foo/usr/bin/foo
 	grep -q ^foo/__init__.py, $(DI)/RECORD
 	test ! -f $(DI)/direct_url.json
 	grep -L ^foo-0.1.dist-info/direct_url.json, $(DI)/RECORD | grep -q RECORD
