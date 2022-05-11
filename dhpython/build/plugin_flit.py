@@ -26,6 +26,7 @@ import logging
 import os
 import os.path as osp
 import shutil
+import sysconfig
 try:
     import tomli
 except ModuleNotFoundError:
@@ -48,9 +49,17 @@ class DebianInstaller(Installer):
         """
         if installdir[:1] == os.sep:
             installdir = installdir[1:]
-        dirs = self._get_dirs(user=self.user)
-        dirs['purelib'] = osp.join(destdir, installdir)
-        dirs['scripts'] = destdir + dirs['scripts']
+
+        vars_ = sysconfig.get_config_vars()
+        vars_['base'] = destdir + vars_['base']
+        try:
+            dirs = sysconfig.get_paths(scheme='deb_system', vars=vars_)
+        except KeyError:
+            # Debian hasn't patched sysconfig schemes until 3.10
+            # TODO: Introduce a version check once sysconfig is patched.
+            dirs = sysconfig.get_paths(scheme='posix_prefix', vars=vars_)
+
+        dirs['purelib'] = dirs['platlib'] = osp.join(destdir, installdir)
         os.makedirs(dirs['purelib'], exist_ok=True)
         os.makedirs(dirs['scripts'], exist_ok=True)
 
