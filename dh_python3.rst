@@ -227,7 +227,7 @@ OPTIONS
 
 SEE ALSO
 ========
-* /usr/share/doc/python/python-policy.txt.gz
+* /usr/share/doc/python3/python-policy.txt.gz
 * /usr/share/doc/dh-python/README.PyDist
 * pybuild(1)
 * py3compile(1), py3clean(1)
