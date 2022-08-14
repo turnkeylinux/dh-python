@@ -1,4 +1,4 @@
-# Copyright © 2012-2013 Piotr Ożarowski <piotr@debian.org>
+# Copyright © 2022 Stefano Rivera <stefanor@debian.org>
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -18,25 +18,6 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 
-import logging
-from glob import glob1
-from os.path import dirname
 
-from dhpython.exceptions import RequiredCommandMissingException
-
-log = logging.getLogger('dhpython')
-
-plugins = {}
-for i in sorted(i[7:-3] for i in glob1(dirname(__file__), 'plugin_*.py')):
-    try:
-        module = __import__("dhpython.build.plugin_%s" % i, fromlist=[i])
-        module.BuildSystem.NAME = i
-        module.BuildSystem.is_usable()
-        plugins[i] = module.BuildSystem
-    except RequiredCommandMissingException as err:
-        log.debug("cannot initialize '%s' plugin: Missing command '%s'", i, err)
-    except Exception as err:
-        if log.level < logging.INFO:
-            log.debug("cannot initialize '%s' plugin", i, exc_info=True)
-        else:
-            log.debug("cannot initialize '%s' plugin: %s", i, err)
+class RequiredCommandMissingException(Exception):
+    pass

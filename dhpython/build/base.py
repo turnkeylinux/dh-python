@@ -25,6 +25,7 @@ from os import remove, walk
 from os.path import exists, isdir, join
 from subprocess import Popen, PIPE
 from shutil import rmtree, copyfile, copytree
+from dhpython.exceptions import RequiredCommandMissingException
 from dhpython.tools import execute
 try:
     from shlex import quote
@@ -119,7 +120,7 @@ class Base:
             process = Popen(['which', command], stdout=PIPE, stderr=PIPE)
             out, err = process.communicate()
             if process.returncode != 0:
-                raise Exception("missing command: %s" % command)
+                raise RequiredCommandMissingException(command)
 
     def detect(self, context):
         """Return certainty level that this plugin describes the right build system
