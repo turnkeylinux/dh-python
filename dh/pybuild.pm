@@ -34,7 +34,7 @@ sub new {
 			$this->{pydef} = `pyversions -vd 2>/dev/null`;}
 		$this->{pydef} =~ s/\s+$//;
 		if ($ENV{'DEBPYTHON_SUPPORTED'}) {
-			$this->{pyvers} = $ENV{'DEBPYTHON_SUPPORTED'};}
+			$this->{pyvers} = $ENV{'DEBPYTHON_SUPPORTED'} =~ s/,/ /r;}
 		else {
 			$this->{pyvers} = `pyversions -vr 2>/dev/null`;}
 		$this->{pyvers} =~ s/\s+$//;
@@ -44,7 +44,7 @@ sub new {
 			$this->{py3def} = `py3versions -vd 2>/dev/null`;}
 		$this->{py3def} =~ s/\s+$//;
 		if ($ENV{'DEBPYTHON3_SUPPORTED'}) {
-			$this->{py3vers} = $ENV{'DEBPYTHON3_SUPPORTED'};}
+			$this->{py3vers} = $ENV{'DEBPYTHON3_SUPPORTED'} =~ s/,/ /r;}
 		else {
 			$this->{py3vers} = `py3versions -vr 2>/dev/null`;}
 		$this->{py3vers} =~ s/\s+$//;
