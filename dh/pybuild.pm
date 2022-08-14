@@ -151,10 +151,10 @@ sub pybuild_commands {
 		my @pypyopts = ('pybuild', "--$step");
 
 		if ($step eq 'test' and $ENV{'PYBUILD_TEST_PYTEST'} ne '1' and
-		       			$ENV{'PYBUILD_TEST_NOSE2'} ne '1' and
-		       			$ENV{'PYBUILD_TEST_NOSE'} ne '1' and
-		       			$ENV{'PYBUILD_TEST_CUSTOM'} ne '1' and
-		       			$ENV{'PYBUILD_TEST_TOX'} ne '1') {
+				$ENV{'PYBUILD_TEST_NOSE2'} ne '1' and
+				$ENV{'PYBUILD_TEST_NOSE'} ne '1' and
+				$ENV{'PYBUILD_TEST_CUSTOM'} ne '1' and
+				$ENV{'PYBUILD_TEST_TOX'} ne '1') {
 			if (grep {$_ eq 'python-tox'} @deps and $ENV{'PYBUILD_TEST_TOX'} ne '0') {
 				push @py2opts, '--test-tox'}
 			elsif (grep {$_ eq 'python-pytest'} @deps and $ENV{'PYBUILD_TEST_PYTEST'} ne '0') {
@@ -199,7 +199,7 @@ sub pybuild_commands {
 		}
 		if ($this->{pydef}) {
 			if (not $pyall and grep {$_ eq 'python' or $_ eq 'python-dev' or
-				       		 $_ eq 'python2.7' or $_ eq 'python2.7-dev'} @deps) {
+					$_ eq 'python2.7' or $_ eq 'python2.7-dev'} @deps) {
 				push @result, [@py2opts, '-i', $i, '-p', $this->{pydef}, @options];
 			}
 			if (not $pyalldbg and grep {$_ eq 'python-dbg' or $_ eq 'python2.7-dbg'} @deps) {
