@@ -1,6 +1,9 @@
 dh-python (5.20220404) UNRELEASED; urgency=medium
 
   * flit plugin: Explicitly install using the "deb_system" sysconfig scheme.
+  * Update location for python-policy in dh_python3(1), thanks Andrius Merkys.
+  * autoscripts/prerm-{py3,pypy}clean: Use sed instead of perl, thanks Gioele
+    Barabucci.
 
  -- Stefano Rivera <stefanor@debian.org>  Wed, 11 May 2022 11:45:37 -0400
 
