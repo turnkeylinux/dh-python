@@ -6,6 +6,7 @@ dh-python (5.20220404) UNRELEASED; urgency=medium
     Barabucci.
   * pybuild.pm: Handle multiple (comma-separated) versions in
     DEBPYTHON3_SUPPORTED. (closes: 1015774)
+  * pybuild.pm: Don't entirely swallow py3versions -r errors. (closes: 827870)
   * pybuild: Don't print stack traces when we can't initialize a plugin due to
     a missing command, it's confusing. (closes: 954215)
   * pybuild cmake plugin: Add support for FindPython and FindPython3,

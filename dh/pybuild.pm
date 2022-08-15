@@ -46,7 +46,13 @@ sub new {
 		if ($ENV{'DEBPYTHON3_SUPPORTED'}) {
 			$this->{py3vers} = $ENV{'DEBPYTHON3_SUPPORTED'} =~ s/,/ /r;}
 		else {
-			$this->{py3vers} = `py3versions -vr 2>/dev/null`;}
+			$this->{py3vers} = `py3versions -vr 2>/dev/null`;
+			if ($this->{py3vers} eq "") {
+				# We swallowed stderr, above
+				system("py3versions -vr");
+				die('E: py3versions failed');
+			}
+		}
 		$this->{py3vers} =~ s/\s+$//;
 		$this->{pypydef} = `pypy -c 'from sys import pypy_version_info as i; print("%s.%s" % (i.major, i.minor))' 2>/dev/null`;
 		$this->{pypydef} =~ s/\s+$//;
