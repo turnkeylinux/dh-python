@@ -200,15 +200,6 @@ def main():
         dependencies = Dependencies(package, 'cpython3', dh.build_depends)
         dependencies.parse(stats, options)
 
-        if stats['ext_vers']:
-            dh.addsubstvar(package, 'python3:Versions',
-                           ', '.join(str(v) for v in sorted(stats['ext_vers'])))
-            ps = package.split('-', 1)
-            if len(ps) > 1 and ps[0] == 'python3':
-                dh.addsubstvar(package, 'python3:Provides',
-                               ', '.join("python%s-%s" % (i, ps[1])
-                               for i in sorted(stats['ext_vers'])))
-
         pyclean_added = False  # invoke pyclean only once in maintainer script
         if stats['compile']:
             args = ''

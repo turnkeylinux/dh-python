@@ -10,6 +10,9 @@ dh-python (5.20220404) UNRELEASED; urgency=medium
     a missing command, it's confusing. (closes: 954215)
   * pybuild cmake plugin: Add support for FindPython and FindPython3,
     available since CMake 3.12. (closes: 949377)
+  * dh_python3: Don't generate ${python3:Provides} or ${python3:Versions}.
+    Never intended for use with Python 3, by the Debian Python Policy, and not
+    currently in use. (closes: 811080, 951748)
 
  -- Stefano Rivera <stefanor@debian.org>  Wed, 11 May 2022 11:45:37 -0400
 
