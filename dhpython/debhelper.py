@@ -157,9 +157,12 @@ class DebHelper:
 
             if not binary_package.startswith(PKG_NAME_TPLS[impl]):
                 # package doesn't have common prefix (python-, python3-, pypy-)
-                # so lets check if Depends contains appropriate substvar
-                if substvar not in paragraph.get('depends', ''):
-                    log.debug('skipping package %s (missing %s in Depends)',
+                # so lets check if Depends/Recommends contains the
+                # appropriate substvar
+                if (substvar not in paragraph.get('depends', '')
+                        and substvar not in paragraph.get('recommends', '')):
+                    log.debug('skipping package %s (missing %s in '
+                              'Depends/Recommends)',
                               binary_package, substvar)
                     continue
             # Operate on binary_package

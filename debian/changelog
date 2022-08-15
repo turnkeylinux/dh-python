@@ -14,6 +14,8 @@ dh-python (5.20220404) UNRELEASED; urgency=medium
   * dh_python3: Don't generate ${python3:Provides} or ${python3:Versions}.
     Never intended for use with Python 3, by the Debian Python Policy, and not
     currently in use. (closes: 811080, 951748)
+  * dh_python3: Operate on binary packages that only Recommends:
+    ${python3:Depends}, too. (closes: 1017001)
 
  -- Stefano Rivera <stefanor@debian.org>  Wed, 11 May 2022 11:45:37 -0400
 
