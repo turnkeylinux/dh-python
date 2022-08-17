@@ -25,6 +25,14 @@ from copy import copy
 from dhpython.version import VersionRange
 
 
+def compiled_regex(string):
+    """argparse regex type"""
+    try:
+        return re.compile(string)
+    except re.error:
+        raise ValueError("regular expression is not valid")
+
+
 def parse_version_range(option, opt, value):
     try:
         return VersionRange(value)
