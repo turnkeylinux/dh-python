@@ -27,8 +27,7 @@ import re
 import sys
 from filecmp import dircmp, cmpfiles, cmp as fcmp
 from optparse import OptionParser, SUPPRESS_HELP
-from os.path import isabs, isdir, islink, exists, join, normpath, splitext,\
-    realpath
+from os.path import isdir, islink, exists, join, splitext, realpath
 from shutil import copy as fcopy
 from dhpython.debhelper import DebHelper
 from dhpython.depends import Dependencies
