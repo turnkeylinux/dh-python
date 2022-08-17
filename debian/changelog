@@ -16,7 +16,7 @@ dh-python (5.20220404) UNRELEASED; urgency=medium
     currently in use. (closes: 811080, 951748)
   * dh_python3: Operate on binary packages that only Recommends:
     ${python3:Depends}, too. (closes: 1017001)
-  * Port dh_python3 to argparse.
+  * Port dh_python2/dh_python3/dh_pypy to argparse.
 
  -- Stefano Rivera <stefanor@debian.org>  Wed, 11 May 2022 11:45:37 -0400
 

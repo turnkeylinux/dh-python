@@ -62,7 +62,8 @@ class Scanner(Scan):
 
 def main():
     parser = ArgumentParser()
-    parser.add_argument('--version', action='version', version='%(prog)s DEVELV')
+    parser.add_argument(
+        '--version', action='version', version='%(prog)s DEVELV')
     parser.add_argument(
         '--no-guessing-deps', action='store_false', dest='guess_deps',
         help='disable guessing dependencies')
