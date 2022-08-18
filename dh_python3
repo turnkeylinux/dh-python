@@ -158,6 +158,8 @@ def main():
 
     options = parser.parse_args(os.environ.get('DH_OPTIONS', '').split()
                                 + sys.argv[1:])
+    if options.O:
+        parser.parse_known_args(options.O, options)
 
     private_dir = options.private_dir
     if private_dir:

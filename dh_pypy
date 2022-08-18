@@ -160,11 +160,13 @@ def main():
         help='do not rewrite shebangs')
     parser.add_argument('private_dir', nargs='?',
         help='Private directory containing Python modules (optional)')
-    # ignore some debhelper options:
+    # debhelper options:
     parser.add_argument('-O', action='append', help=SUPPRESS)
 
     options = parser.parse_args(os.environ.get('DH_OPTIONS', '').split()
                                 + sys.argv[1:])
+    if options.O:
+        parser.parse_known_args(options.O, options)
 
     private_dir = options.private_dir
     if private_dir:

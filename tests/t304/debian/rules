@@ -16,6 +16,11 @@ override_dh_install:
 		../../dh_python3 -p overrides \
 		--shebang=/usr/bin/python3-dbg \
 		/usr/share/overrides1
+	DH_VERBOSE=1 ../../dh_python3 -p overrides \
+		--shebang=/usr/bin/python3.0 \
+		-O=--shebang=/usr/bin/python3-dbg \
+		-O=--foo=bar \
+		/usr/share/overrides2
 
 clean:
 	dh_clean

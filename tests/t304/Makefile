@@ -18,3 +18,4 @@ check:
 		debian/foo/DEBIAN/postinst
 	# Check argument parsing order
 	grep -q '#! /usr/bin/python3-dbg' debian/overrides/usr/share/overrides1/foo.py
+	grep -q '#! /usr/bin/python3-dbg' debian/overrides/usr/share/overrides2/foo.py
