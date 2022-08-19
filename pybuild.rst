@@ -269,8 +269,8 @@ pyproject
 The pyproject plugin drives the new PEP-517 standard interface for
 building Python packages, upstream. This is configured via
 `pyproject.toml`.
-This plugin is still in beta, but it's expected to replace the distutils
-and flit plugins in the future.
+This plugin is expected to replace the distutils and flit plugins in the
+future.
 
 To use this plugin:
 
