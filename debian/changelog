@@ -1,4 +1,4 @@
-dh-python (5.20220404) UNRELEASED; urgency=medium
+dh-python (5.20220819) unstable; urgency=medium
 
   * flit plugin: Explicitly install using the "deb_system" sysconfig scheme.
   * Update location for python-policy in dh_python3(1), thanks Andrius Merkys.
@@ -23,7 +23,7 @@ dh-python (5.20220404) UNRELEASED; urgency=medium
   * Remove the text in pybuild(1) describing pybuild-plugin-pyproject as being
     in beta.
 
- -- Stefano Rivera <stefanor@debian.org>  Wed, 11 May 2022 11:45:37 -0400
+ -- Stefano Rivera <stefanor@debian.org>  Fri, 19 Aug 2022 22:34:55 +0200
 
 dh-python (5.20220403) unstable; urgency=medium
 
