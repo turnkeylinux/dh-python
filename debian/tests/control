@@ -41,7 +41,7 @@ Depends:
  pybuild-plugin-pyproject,
  flit,
  fakeroot,
- python3-all,
+ python3-all-dev,
  python3-poetry-core,
  python3-pytest,
  python3-setuptools,
