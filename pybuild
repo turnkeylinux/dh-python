@@ -330,6 +330,15 @@ def main(cfg):
                 raise Exception(msg)
         return result
 
+    def move_to_ext_destdir(i, version, context):
+        """Move built C extensions from the general destdir to ext_destdir"""
+        ext_destdir = get_option('ext_destdir', i, version)
+        if ext_destdir:
+            move_matching_files(context['destdir'], ext_destdir,
+                                get_option('ext_pattern', i, version),
+                                get_option('ext_sub_pattern', i, version),
+                                get_option('ext_sub_repl', i, version))
+
     func = None
     if cfg.clean_only:
         func = plugin.clean
@@ -374,12 +383,7 @@ def main(cfg):
                     if step not in ('build', 'test'):
                         exit(13)
                 if step == 'install':
-                    ext_destdir = get_option('ext_destdir', i, version)
-                    if ext_destdir:
-                        move_matching_files(c['destdir'], ext_destdir,
-                                            get_option('ext_pattern', i, version),
-                                            get_option('ext_sub_pattern', i, version),
-                                            get_option('ext_sub_repl', i, version))
+                    move_to_ext_destdir(i, version, c)
         if failure:
             # exit with a non-zero return code if at least one build/test failed
             exit(13)
@@ -413,12 +417,7 @@ def main(cfg):
                     run(plugin.build, i, version, c)
                 if not is_disabled('install', i, version):
                     run(plugin.install, i, version, c)
-                    ext_destdir = get_option('ext_destdir', i, version)
-                    if ext_destdir:
-                        move_matching_files(c['destdir'], ext_destdir,
-                                            get_option('ext_pattern', i, version),
-                                            get_option('ext_sub_pattern', i, version),
-                                            get_option('ext_sub_repl', i, version))
+                    move_to_ext_destdir(i, version, c)
                 if not nocheck and not is_disabled('test', i, version):
                     run(plugin.test, i, version, c)
     except Exception as err:
