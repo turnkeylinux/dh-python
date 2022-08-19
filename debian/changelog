@@ -18,6 +18,8 @@ dh-python (5.20220404) UNRELEASED; urgency=medium
     ${python3:Depends}, too. (closes: 1017001)
   * Port dh_python2/dh_python3/dh_pypy to argparse.
   * dh_*: Parse -O=... options provided by debhelper. (closes: 949286)
+  * pybuild: Make --ext-dest-dir work again, when --name is specified.
+    (closes: 942882)
 
  -- Stefano Rivera <stefanor@debian.org>  Wed, 11 May 2022 11:45:37 -0400
 

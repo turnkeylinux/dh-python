@@ -332,9 +332,10 @@ def main(cfg):
 
     def move_to_ext_destdir(i, version, context):
         """Move built C extensions from the general destdir to ext_destdir"""
+        args = get_args(context, 'install', version, interpreter)
         ext_destdir = get_option('ext_destdir', i, version)
         if ext_destdir:
-            move_matching_files(context['destdir'], ext_destdir,
+            move_matching_files(args['destdir'], ext_destdir,
                                 get_option('ext_pattern', i, version),
                                 get_option('ext_sub_pattern', i, version),
                                 get_option('ext_sub_repl', i, version))
