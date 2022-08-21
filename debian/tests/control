@@ -30,7 +30,7 @@ Depends:
  python-all-dbg,
  python3-all,
  python3-all-dbg,
- python3-nose
+ python3-nose2
 Restrictions: allow-stderr
 
 Tests: pybuild

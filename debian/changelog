@@ -1,3 +1,9 @@
+dh-python (5.20220820) UNRELEASED; urgency=medium
+
+  * Run Python test suite with nose2.
+
+ -- Stefano Rivera <stefanor@debian.org>  Sun, 21 Aug 2022 18:19:24 +0200
+
 dh-python (5.20220819) unstable; urgency=medium
 
   * flit plugin: Explicitly install using the "deb_system" sysconfig scheme.

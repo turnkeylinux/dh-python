@@ -56,7 +56,7 @@ dist_fallback:
 # TESTS
 nose:
 	#nosetests3 --verbose --with-doctest --with-coverage
-	nosetests3 --verbose --with-doctest
+	nose2-3 --verbose --plugin nose2.plugins.doctests --with-doctest
 
 tests: nose
 	make -C tests
