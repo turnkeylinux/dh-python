@@ -3,9 +3,9 @@ Section: python
 Priority: optional
 Maintainer: Piotr Ożarowski <piotr@debian.org>
 Build-Depends: debhelper-compat (= 12)
+ , pybuild-plugin-pyproject
  , python3-all
  , python3-setuptools
- , dh-python-pep517
 Standards-Version: 3.9.4
 
 Package: python3-foo
