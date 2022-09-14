@@ -10,6 +10,10 @@ dh-python (5.20220820) UNRELEASED; urgency=medium
     + Drop check for DEB_BUILD_OPTIONS containing "nocheck", since debhelper now
       does this.
 
+  [ Debian Janitor ]
+  * Remove constraints unnecessary since buster (oldstable):
+    + dh-python: Drop versioned constraint on python3 in Replaces.
+
  -- Stefano Rivera <stefanor@debian.org>  Sun, 21 Aug 2022 18:19:24 +0200
 
 dh-python (5.20220819) unstable; urgency=medium
