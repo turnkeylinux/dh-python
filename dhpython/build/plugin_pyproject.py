@@ -189,4 +189,7 @@ class BuildSystem(Base):
 
     @shell_command
     def test(self, context, args):
+        scripts = f'{args["build_dir"]}/scripts-{args["interpreter"].version}'
+        if osp.exists(scripts):
+            context['ENV']['PATH'] = f"{scripts}:{context['ENV']['PATH']}"
         return super().test(context, args)

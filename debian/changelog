@@ -12,6 +12,11 @@ dh-python (5.20220820) UNRELEASED; urgency=medium
   * Remove constraints unnecessary since buster (oldstable):
     + dh-python: Drop versioned constraint on python3 in Replaces.
 
+  [ Stuart Prescott ]
+  * pyproject plugin: Make the package's entry points available in the PATH
+    when running the package's test suite, so that tests using the entry
+    points can be run.
+
  -- Stefano Rivera <stefanor@debian.org>  Sun, 21 Aug 2022 18:19:24 +0200
 
 dh-python (5.20220819) unstable; urgency=medium
