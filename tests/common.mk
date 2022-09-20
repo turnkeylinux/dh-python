@@ -13,6 +13,8 @@ export DH_INTERNAL_OPTIONS=
 all: run check
 
 run: clean
+	@echo ============================================================
+	@echo ==== TEST: `basename $$PWD`
 	dpkg-buildpackage -b -us -uc --no-check-builddeps
 
 clean-common:
