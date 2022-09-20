@@ -140,7 +140,8 @@ def load(impl):
     if isdir(dname):
         to_check.extend(join(dname, i) for i in os.listdir(dname))
 
-    fbname = '/usr/share/dh-python/dist/{}_fallback'.format(impl)
+    fbdir = os.environ.get('DH_PYTHON_DIST', '/usr/share/dh-python/dist/')
+    fbname = join(fbdir, '{}_fallback'.format(impl))
     if exists(fbname):  # fall back generated at dh-python build time
         to_check.append(fbname)  # last one!
 
