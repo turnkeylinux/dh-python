@@ -13,7 +13,7 @@ export DH_INTERNAL_OPTIONS=
 all: run check
 
 run: clean
-	dpkg-buildpackage -b -us -uc
+	dpkg-buildpackage -b -us -uc --no-check-builddeps
 
 clean-common:
 	./debian/rules clean
