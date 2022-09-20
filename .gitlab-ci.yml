@@ -1,0 +1,17 @@
+default:
+  image: debian:unstable
+
+tests:
+  before_script:
+  - apt-get update
+  - apt-get -y install --no-install-recommends build-essential debhelper fakeroot flit libjs-jquery pypy python3-all python3-all-dbg python3-all-dev python3-build python3-installer python3-nose2 python3-poetry-core python3-pytest python3-setuptools python3-tomli tox
+  - apt-get -y install --no-install-recommends python-all python-all-dbg python-setuptools
+
+  script:
+  - make tests
+  - echo -e '#!/bin/sh\nset -eu\nmake "$@"' > debian/tests/run-installed
+  - export DH_PYTHON_DIST=$PWD/pydist
+  - ./debian/tests/dh-python
+  - ./debian/tests/dh-python2
+  - ./debian/tests/pybuild
+  - ./debian/tests/pybuild-py2
