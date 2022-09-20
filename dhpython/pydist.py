@@ -125,7 +125,7 @@ def validate(fpath):
 
 @memoize
 def load(impl):
-    """Load iformation about installed Python distributions.
+    """Load information about installed Python distributions.
 
     :param impl: interpreter implementation, f.e. cpython2, cpython3, pypy
     :type impl: str

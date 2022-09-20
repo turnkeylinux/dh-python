@@ -205,14 +205,14 @@ def remove_ns(interpreter, package, namespaces, versions):
 
 
 def execute(command, cwd=None, env=None, log_output=None, shell=True):
-    """Execute external shell commad.
+    """Execute external shell command.
 
-    :param cdw: currennt working directory
+    :param cdw: current working directory
     :param env: environment
     :param log_output:
         * opened log file or path to this file, or
         * None if output should be included in the returned dict, or
-        * False if output should be redirectored to stdout/stderr
+        * False if output should be redirected to stdout/stderr
     """
     args = {'shell': shell, 'cwd': cwd, 'env': env}
     close = False
