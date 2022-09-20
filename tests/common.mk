@@ -15,7 +15,9 @@ all: run check
 run: clean
 	@echo ============================================================
 	@echo ==== TEST: `basename $$PWD`
-	dpkg-buildpackage -b -us -uc --no-check-builddeps
+	dpkg-buildpackage -b -us -uc \
+	  --no-check-builddeps \
+	  --check-command="../test-package-show-info"
 
 clean-common:
 	./debian/rules clean
