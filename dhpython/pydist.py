@@ -203,20 +203,24 @@ def guess_dependency(impl, req, version=None, bdep=None,
     name = req_d['name']
     details = data.get(name.lower())
     if details:
+        log.debug("dependency: module seems to be installed")
         for item in details:
             if version and version not in item.get('versions', version):
                 # rule doesn't match version, try next one
                 continue
             if not item['dependency']:
+                log.debug("dependency: requirement ignored")
                 return  # this requirement should be ignored
             if item['dependency'].endswith(')'):
                 # no need to translate versions if version is hardcoded in
                 # Debian dependency
+                log.debug("dependency: requirement already has hardcoded version")
                 return item['dependency'] + env_marker_alts
             if req_d['operator'] == '==' and req_d['version'].endswith('*'):
                 # Translate "== 1.*" to "~= 1.0"
                 req_d['operator'] = '~='
                 req_d['version'] = req_d['version'].replace('*', '0')
+                log.debug("dependency: translated wildcard version to semver limit")
             if req_d['version'] and (item['standard'] or item['rules']) and\
                     req_d['operator'] not in (None, '!='):
                 o = _translate_op(req_d['operator'])
@@ -233,6 +237,7 @@ def guess_dependency(impl, req, version=None, bdep=None,
                     v2 = _translate(_max_compatible(req_d['version']), item['rules'], item['standard'])
                     d += ", %s (%s %s)%s" % (
                         item['dependency'], o2, v2, env_marker_alts)
+                log.debug("dependency: constructed version")
                 return d
             elif accept_upstream_versions and req_d['version'] and \
                     req_d['operator'] not in (None,'!='):
@@ -249,16 +254,19 @@ def guess_dependency(impl, req, version=None, bdep=None,
                     d += ", %s (%s %s)%s" % (
                         item['dependency'], o2,
                         _max_compatible(req_d['version']), env_marker_alts)
+                log.debug("dependency: constructed upstream version")
                 return d
             else:
                 if item['dependency'] in bdep:
                     if None in bdep[item['dependency']] and bdep[item['dependency']][None]:
+                        log.debug("dependency: included in build-deps with limits ")
                         return "{} ({}){}".format(
                             item['dependency'], bdep[item['dependency']][None],
                             env_marker_alts)
                     # if arch in bdep[item['dependency']]:
                     # TODO: handle architecture specific dependencies from build depends
                     #       (current architecture is needed here)
+                log.debug("dependency: included in build-deps")
                 return item['dependency'] + env_marker_alts
 
     # search for Egg metadata file or directory (using dpkg -S)
@@ -284,6 +292,7 @@ def guess_dependency(impl, req, version=None, bdep=None,
         elif not result:
             log.debug('dpkg -S did not find package for %s', name)
         else:
+            log.debug('dependency: found a result with dpkg -S')
             return result.pop() + env_marker_alts
     else:
         log.debug('dpkg -S did not find package for %s: %s', name, stderr)
