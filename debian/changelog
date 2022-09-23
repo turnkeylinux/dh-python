@@ -9,8 +9,6 @@ dh-python (5.20220820) UNRELEASED; urgency=medium
   * Bump debhelper from old 12 to 13.
     + Drop check for DEB_BUILD_OPTIONS containing "nocheck", since debhelper now
       does this.
-
-  [ Debian Janitor ]
   * Remove constraints unnecessary since buster (oldstable):
     + dh-python: Drop versioned constraint on python3 in Replaces.
 
