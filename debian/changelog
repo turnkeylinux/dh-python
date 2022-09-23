@@ -1,6 +1,8 @@
 dh-python (5.20220820) UNRELEASED; urgency=medium
 
   * Run Python test suite with nose2. (closes: 1018338)
+  * Don't attempt to diff static libs (.a), thanks Nick Rosbrook.
+    (closes: 1020528)
 
  -- Stefano Rivera <stefanor@debian.org>  Sun, 21 Aug 2022 18:19:24 +0200
 

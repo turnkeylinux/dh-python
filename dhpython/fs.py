@@ -144,7 +144,7 @@ def share_files(srcdir, dstdir, interpreter, options):
         else:
             # The files differed so we cannot collapse them.
             log.warn('Paths differ: %s and %s', fpath1, fpath2)
-            if options.verbose and not i.endswith('.so'):
+            if options.verbose and not i.endswith(('.so','.a')):
                 with open(fpath1) as fp1:
                     fromlines = fp1.readlines()
                 with open(fpath2) as fp2:
