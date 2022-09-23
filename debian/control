@@ -3,7 +3,7 @@ Section: python
 Priority: optional
 Maintainer: Piotr Ożarowski <piotr@debian.org>
 Uploaders: Stefano Rivera <stefanor@debian.org>
-Build-Depends: debhelper-compat (= 12),
+Build-Depends: debhelper-compat (= 13),
  python3-minimal, libpython3-stdlib, libdpkg-perl,
 # provides rst2man command (use python-docutils to avoid circular deps):
  python3-docutils,
