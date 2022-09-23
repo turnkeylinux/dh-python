@@ -1,4 +1,4 @@
-dh-python (5.20220820) UNRELEASED; urgency=medium
+dh-python (5.20220923) unstable; urgency=medium
 
   [ Stefano Rivera ]
   * Run Python test suite with nose2. (closes: 1018338)
@@ -18,7 +18,7 @@ dh-python (5.20220820) UNRELEASED; urgency=medium
     when running the package's test suite, so that tests using the entry
     points can be run.
 
- -- Stefano Rivera <stefanor@debian.org>  Sun, 21 Aug 2022 18:19:24 +0200
+ -- Stefano Rivera <stefanor@debian.org>  Fri, 23 Sep 2022 09:47:57 +0200
 
 dh-python (5.20220819) unstable; urgency=medium
 
