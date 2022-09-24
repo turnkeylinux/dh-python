@@ -1,9 +1,9 @@
-dh-python (5.20220924) UNRELEASED; urgency=medium
+dh-python (5.20220924) unstable; urgency=medium
 
   * Escape a . in a regex in tests/test-package-show-info, fixes FTBFS in
     Ubuntu which builds with the noudeb profile.
 
- -- Stefano Rivera <stefanor@debian.org>  Sat, 24 Sep 2022 19:11:35 +0200
+ -- Stefano Rivera <stefanor@debian.org>  Sat, 24 Sep 2022 19:17:12 +0200
 
 dh-python (5.20220923) unstable; urgency=medium
 
