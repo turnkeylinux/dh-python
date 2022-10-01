@@ -1,3 +1,10 @@
+dh-python (5.20220925) UNRELEASED; urgency=medium
+
+  * Fix -X handling in dh_python3 et al. Broken in the migration to argparse
+    in 5.20220819. (closes: 1020041)
+
+ -- Stefano Rivera <stefanor@debian.org>  Sat, 01 Oct 2022 14:26:44 +0200
+
 dh-python (5.20220924) unstable; urgency=medium
 
   * Escape a . in a regex in tests/test-package-show-info, fixes FTBFS in

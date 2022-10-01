@@ -265,8 +265,8 @@ def main():
                 vr = VersionRange(minver=extensions[0], maxver=extensions[-1])
                 args += " -V %s" % vr
 
-            for pattern in options.regexpr or []:
-                args += " -X '%s'" % pattern.replace("'", r"'\''")
+            for regex in options.regexpr or []:
+                args += " -X '%s'" % regex.pattern.replace("'", r"'\''")
 
             dh.autoscript(package, 'postinst', 'postinst-pypycompile', args)
 
