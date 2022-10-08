@@ -1,6 +1,6 @@
 dh-python (5.20221002) UNRELEASED; urgency=medium
 
-  * Ignore python_version environment markers with versions we can't parse.
+  * Ignore python_*_version environment markers with versions we can't parse.
     (closes: 1021410)
 
  -- Stefano Rivera <stefanor@debian.org>  Sat, 08 Oct 2022 14:49:29 +0200
