@@ -475,22 +475,16 @@ class TestEnvironmentMarkersDistInfo(DependenciesTestCase):
         self.assertIn('python3-python-version-full-ge351 | python3 (<< 3.5.1)',
                       self.d.depends)
 
-    def test_skips_py_version_full_ge_351a1_packages(self):
-        self.assertNotInDepends('python3-python-version-full-ge351a1')
-
     def test_depends_on_py_version_full_ge_351a1_packages(self):
-        raise unittest.SkipTest("Missing full PEP-440 parsing")
+        # With full PEP-440 parsing this should be (<< 3.5.1~a1)
         self.assertIn(
-            'python3-python-version-full-ge351a1 | python3 (<< 3.5.1~a1)',
+            'python3-python-version-full-ge351a1 | python3 (<< 3.5.0)',
             self.d.depends)
 
-    def test_skips_py_version_full_ge_351b1post1_packages(self):
-        self.assertNotInDepends('python3-python-version-full-ge351b1post1')
-
     def test_depends_on_py_version_full_ge_351b1post1_packages(self):
-        raise unittest.SkipTest("Missing full PEP-440 parsing")
+        # With full PEP-440 parsing this should be (<< 3.5.1~b1.post1)
         self.assertIn('python3-python-version-full-ge351a1 '
-                      '| python3 (<< 3.5.1~b1.post1)',
+                      '| python3 (<< 3.5.0)',
                       self.d.depends)
 
     def test_depends_on_py_version_full_gt_351_packages(self):

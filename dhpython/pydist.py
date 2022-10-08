@@ -357,21 +357,21 @@ def check_environment_marker_restrictions(req, marker_str, impl):
                         'implementation_version'):
         # TODO: Replace with full PEP-440 parser
         env_ver = value
-        int_ver = value.split('.')
+        split_ver = value.split('.')
         if marker == 'python_version':
             version_parts = 2
         elif marker == 'python_full_version':
             version_parts = 3
         else:
-            version_parts = len(int_ver)
+            version_parts = len(split_ver)
 
         if '*' in env_ver:
-            if int_ver.index('*') != len(int_ver) -1:
+            if split_ver.index('*') != len(split_ver) -1:
                 log.info('Skipping requirement with intermediate wildcard: %s',
                          req)
                 return False
-            int_ver.pop()
-            env_ver = '.'.join(int_ver)
+            split_ver.pop()
+            env_ver = '.'.join(split_ver)
             if op == '==':
                 if marker == 'python_full_version':
                     marker = 'python_version'
@@ -391,11 +391,16 @@ def check_environment_marker_restrictions(req, marker_str, impl):
                          op, req)
                 return False
 
-        if not all(x.isdigit() for x in int_ver):
-            log.info('Skipping requirement with unparseable version %s in %s',
-                     value, req)
-            return False
-        int_ver = [int(x) for x in int_ver]
+        int_ver = []
+        for ver_part in split_ver:
+            if ver_part.isdigit():
+                int_ver.append(int(ver_part))
+            else:
+                env_ver = '.'.join(str(x) for x in int_ver)
+                log.info('Truncating unparseable version %s to %s in %s',
+                         value, env_ver, req)
+                break
+
         if len(int_ver) < version_parts:
             int_ver.append(0)
             env_ver += '.0'

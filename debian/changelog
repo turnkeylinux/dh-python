@@ -2,6 +2,8 @@ dh-python (5.20221002) UNRELEASED; urgency=medium
 
   * Ignore python_*_version environment markers with versions we can't parse.
     (closes: 1021410)
+  * Add some hacks to our python_full_version environment marker parsing to at
+    least produce a reasonable result for PEP-440 pre-releases like 1021410.
 
  -- Stefano Rivera <stefanor@debian.org>  Sat, 08 Oct 2022 14:49:29 +0200
 
