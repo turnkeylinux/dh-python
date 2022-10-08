@@ -38,6 +38,7 @@ Interpreter = None
 
 
 class Version:
+    # TODO: Upgrade to PEP-440
     def __init__(self, value=None, major=None, minor=None, micro=None,
                  releaselevel=None, serial=None):
         """Construct a new instance.

@@ -355,6 +355,7 @@ def check_environment_marker_restrictions(req, marker_str, impl):
 
     elif marker in ('python_version', 'python_full_version',
                         'implementation_version'):
+        # TODO: Replace with full PEP-440 parser
         env_ver = value
         int_ver = value.split('.')
         if marker == 'python_version':
@@ -390,6 +391,10 @@ def check_environment_marker_restrictions(req, marker_str, impl):
                          op, req)
                 return False
 
+        if not all(x.isdigit() for x in int_ver):
+            log.info('Skipping requirement with unparseable version %s in %s',
+                     value, req)
+            return False
         int_ver = [int(x) for x in int_ver]
         if len(int_ver) < version_parts:
             int_ver.append(0)

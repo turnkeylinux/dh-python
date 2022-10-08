@@ -1,3 +1,10 @@
+dh-python (5.20221002) UNRELEASED; urgency=medium
+
+  * Ignore python_version environment markers with versions we can't parse.
+    (closes: 1021410)
+
+ -- Stefano Rivera <stefanor@debian.org>  Sat, 08 Oct 2022 14:49:29 +0200
+
 dh-python (5.20221001) unstable; urgency=medium
 
   * Fix -X handling in dh_python3 et al. Broken in the migration to argparse
