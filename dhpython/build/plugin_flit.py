@@ -129,21 +129,6 @@ class BuildSystem(Base):
             return 0
 
         result = super().detect(context)
-        try:
-            with open('pyproject.toml', 'rb') as f:
-                pyproject = tomli.load(f)
-            if pyproject.get('build-system', {}).get('build-backend') == \
-                    'flit_core.buildapi':
-                result += 35
-            else:
-                # Not a flit built package
-                result = 0
-        except NameError:
-            # No toml, no autdetection
-            result = 0
-        except FileNotFoundError:
-            # Not a pep517 package
-            result = 0
         if result > 100:
             return 100
         return result
