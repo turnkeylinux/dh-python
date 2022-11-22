@@ -21,6 +21,7 @@
 
 from fnmatch import fnmatch
 from pathlib import Path
+import copy
 import csv
 import logging
 import os
@@ -50,7 +51,7 @@ class DebianInstaller(Installer):
         if installdir[:1] == os.sep:
             installdir = installdir[1:]
 
-        vars_ = sysconfig.get_config_vars()
+        vars_ = copy.copy(sysconfig.get_config_vars())
         vars_['base'] = destdir + vars_['base']
         try:
             dirs = sysconfig.get_paths(scheme='deb_system', vars=vars_)
