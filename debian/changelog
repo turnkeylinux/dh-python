@@ -1,6 +1,8 @@
 dh-python (5.20221009) UNRELEASED; urgency=medium
 
   * Support the nodoc and nocheck build profiles.
+  * flit plugin: Avoid modifying sysconfig data, thanks Stuart Prescott.
+    (closes: 1024521)
 
  -- Stefano Rivera <stefanor@debian.org>  Sat, 15 Oct 2022 17:53:49 +0200
 
