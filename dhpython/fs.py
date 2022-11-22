@@ -98,11 +98,12 @@ def share_files(srcdir, dstdir, interpreter, options):
                 fpath1 = Scan.rename_ext(fpath1, interpreter, version)
                 i = split(fpath1)[-1]
         if srcdir.endswith(".dist-info"):
-            if i == 'LICENSE' or i.startswith('LICENSE.'):
+            if i in ('COPYING', 'LICENSE') or i.startswith(
+                    ('COPYING.', 'LICENSE.')):
                 os.remove(fpath1)
                 cleanup_actions.append((remove_from_RECORD, ([i],)))
                 continue
-            elif isdir(fpath1) and i == 'license_files':
+            elif isdir(fpath1) and i in ('licenses', 'license_files'):
                 cleanup_actions.append((
                     remove_from_RECORD,
                     ([
