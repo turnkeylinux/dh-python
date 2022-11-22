@@ -1,3 +1,9 @@
+dh-python (5.20221123) UNRELEASED; urgency=medium
+
+  * Deprecate the flit plugin in favour of pyproject.
+
+ -- Stefano Rivera <stefanor@debian.org>  Tue, 22 Nov 2022 15:56:53 +0200
+
 dh-python (5.20221122) unstable; urgency=medium
 
   * Support the nodoc and nocheck build profiles.

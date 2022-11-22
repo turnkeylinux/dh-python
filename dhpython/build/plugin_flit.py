@@ -161,6 +161,8 @@ class BuildSystem(Base):
         return 0  # Not needed for flit
 
     def build(self, context, args):
+        log.warning("The pybuild flit plugin is deprecated, "
+                    "please use the pyproject plugin instead.")
         my_dir = Path(args['dir'])
         install_kwargs = {'user': False, 'symlink': False, 'deps': 'none'}
         DebianInstaller.from_ini_path(my_dir / 'pyproject.toml',

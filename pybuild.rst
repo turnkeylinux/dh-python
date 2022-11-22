@@ -240,12 +240,14 @@ automatically selected.  These systems are currently supported::
 
 * distutils (most commonly used)
 * cmake
-* flit
+* flit (deprecated)
 * pyproject
 * custom
 
 flit plugin
 ~~~~~~~~~~~
+The flit plugin is deprecated, please use the pyproject plugin instead.
+
 The flit plugin can be used to build Debian packages based on PEP 517
 metadata in `pyproject.toml` when flit is the upstream build system.  These
 can be identified by the presence of a `build-backend = "flit_core.buildapi"`
