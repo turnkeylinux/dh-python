@@ -1,4 +1,4 @@
-dh-python (5.20221009) UNRELEASED; urgency=medium
+dh-python (5.20221122) unstable; urgency=medium
 
   * Support the nodoc and nocheck build profiles.
   * flit plugin: Avoid modifying sysconfig data, thanks Stuart Prescott.
