@@ -170,3 +170,23 @@ class TestControlMissingPackage(DebHelperTestCase):
                'field')
         with self.assertRaisesRegex(Exception, msg):
             DebHelper(self.build_options())
+
+
+class TestRemainingPackages(DebHelperTestCase):
+    control = CONTROL
+    options = {
+        'remaining_packages': True,
+    }
+    parse_control = False
+
+    def setUp(self):
+        super().setUp()
+        with open('debian/python3-foo.debhelper.log', 'w') as f:
+            f.write('dh_python3\n')
+        with open('debian/python3-foo-ext.debhelper.log', 'w') as f:
+            f.write('dh_foobar\n')
+        self.dh = DebHelper(self.build_options(), impl=self.impl)
+
+    def test_skips_logged_packages(self):
+        self.assertEqual(list(self.dh.packages.keys()),
+                         ['python3-foo-ext', 'foo', 'recfoo'])

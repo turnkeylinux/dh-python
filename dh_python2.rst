@@ -175,6 +175,9 @@ OPTIONS
 
 -N NO_PACKAGE, --no-package=NO_PACKAGE	do not act on the specified package
 
+--remaining-packages	Do not act on the packages which have already
+  been acted on by this command earlier in the same override.
+
 -V VRANGE	specify list of supported Python versions. See
   pycompile(1) for examples
 

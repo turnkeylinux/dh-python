@@ -123,6 +123,9 @@ OPTIONS
 
 -N NO_PACKAGE, --no-package=NO_PACKAGE	do not act on the specified package
 
+--remaining-packages	Do not act on the packages which have already
+  been acted on by this command earlier in the same override.
+
 -X REGEXPR, --exclude=REGEXPR	exclude items that match given REGEXPR. You may
   use this option multiple times to build up a list of things to exclude.
 

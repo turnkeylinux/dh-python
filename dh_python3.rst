@@ -179,6 +179,9 @@ OPTIONS
 
 -N NO_PACKAGE, --no-package=NO_PACKAGE	do not act on the specified package
 
+--remaining-packages	Do not act on the packages which have already
+  been acted on by this command earlier in the same override.
+
 -V VERSION_RANGE	specify list of supported Python 3 versions. See
   py3compile(1) for examples
 

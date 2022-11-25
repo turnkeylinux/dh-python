@@ -18,6 +18,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 
+import errno
 import logging
 import re
 from os import makedirs, chmod, environ
@@ -42,6 +43,7 @@ def build_options(**options):
         'package': [],
         'no_package': [],
         'write_log': False,
+        'remaining_packages': False,
     }
     built_options = default_options
     built_options.update(options)
@@ -150,6 +152,9 @@ class DebHelper:
                 continue
             if skip_pkgs and binary_package in skip_pkgs:
                 continue
+            if (options.remaining_packages and
+                    self.has_acted_on_package(binary_package)):
+                continue
             pkg = {
                 'substvars': {},
                 'autoscripts': {},
@@ -177,6 +182,18 @@ class DebHelper:
         fp.close()
         log.debug('source=%s, binary packages=%s', self.source_name,
                   list(self.packages.keys()))
+
+    def has_acted_on_package(self, package):
+        try:
+            with open('debian/{}.debhelper.log'.format(package),
+                      encoding='utf-8') as f:
+                for line in f:
+                    if line.strip() == self.command:
+                        return True
+        except IOError as e:
+            if e.errno != errno.ENOENT:
+                raise
+        return False
 
     def addsubstvar(self, package, name, value):
         """debhelper's addsubstvar"""

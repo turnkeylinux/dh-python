@@ -295,6 +295,10 @@ def main():
         '-N', '--no-package', action='append', metavar='PACKAGE',
         help='do not act on the specified package')
     parser.add_argument(
+        '--remaining-packages', action='store_true',
+        help='Do not act on the packages which have already been acted on by '
+             'this debhelper command earlier')
+    parser.add_argument(
         '--compile-all', action='store_true',
         help='compile all files from given private directory in postinst, not '
              'just the ones provided by the package')
