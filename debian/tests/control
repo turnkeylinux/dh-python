@@ -38,6 +38,7 @@ Restrictions: allow-stderr
 Tests: pybuild-autopkgtest
 Depends:
  autopkgtest,
+ debhelper,
  dh-python,
  make,
  pybuild-plugin-pyproject,
