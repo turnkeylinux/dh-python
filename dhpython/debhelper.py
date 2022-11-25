@@ -41,6 +41,7 @@ def build_options(**options):
         'arch': None,
         'package': [],
         'no_package': [],
+        'write_log': False,
     }
     built_options = default_options
     built_options.update(options)
@@ -58,6 +59,11 @@ class DebHelper:
         # Note that each DebHelper instance supports ONE interpreter type only
         # it's not possible to mix cpython2, cpython3 and pypy here
         self.impl = impl
+        self.command = {
+            'cpython2': 'dh_python2',
+            'cpython3': 'dh_python3',
+            'pypy': 'dh_pypy',
+        }[impl]
         skip_tpl = set()
         for name, tpls in PKG_NAME_TPLS.items():
             if name != impl:
@@ -289,7 +295,16 @@ class DebHelper:
                 fp.close()
                 chmod(fn, 0o755)
 
+    def save_log(self):
+        if not self.options.write_log:
+            return
+        for package, settings in self.packages.items():
+            with open('debian/{}.debhelper.log'.format(package),
+                      'a', encoding='utf-8') as f:
+                f.write(self.command + '\n')
+
     def save(self):
         self.save_substvars()
         self.save_autoscripts()
         self.save_rtupdate()
+        self.save_log()

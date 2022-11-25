@@ -187,6 +187,10 @@ def main():
     else:
         log.setLevel(logging.INFO)
 
+    options.write_log = False
+    if os.environ.get('DH_INTERNAL_OVERRIDE', ''):
+        options.write_log = True
+
     try:
         dh = DebHelper(options, impl='pypy')
     except Exception as e:

@@ -3,6 +3,7 @@ dh-python (5.20221123) UNRELEASED; urgency=medium
   * Deprecate the flit plugin in favour of pyproject.
     - Reduce the auto-detect score of the flit plugin.
   * dh_python3: Clean up more license files from dist-info directories.
+  * Write to debhelper.log files, in overrides.
 
  -- Stefano Rivera <stefanor@debian.org>  Tue, 22 Nov 2022 15:56:53 +0200
 
