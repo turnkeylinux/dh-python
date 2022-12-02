@@ -5,7 +5,9 @@ set -eu
 cp -r tests "$AUTOPKGTEST_TMP"
 cd "$AUTOPKGTEST_TMP"
 
-nose2-3 --verbose --plugin nose2.plugins.doctests --with-doctest \
-        --start-dir /usr/share/dh-python/dhpython
+for py in $(py3version -s); do
+    $py -m nose2 --verbose --plugin nose2.plugins.doctests --with-doctest \
+            --start-dir /usr/share/dh-python/dhpython
 
-PYTHONPATH=/usr/share/dh-python nose2-3 -v tests
+    PYTHONPATH=/usr/share/dh-python $py -m nose2 -v tests
+done
