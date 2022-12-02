@@ -9,9 +9,9 @@ in Debian.
   commands (but it can be used outside ``dh`` as well). It builds and installs
   files.
 
-* ``dh_python2`` / ``dh_python3`` / ``dh_pypy`` are tools that take what
-  ``pybuild`` produces and generates runtime dependencies and maintainer
-  scripts. It fixes some common mistakes, like installing files into
+* ``dh_python3`` is a tool that takes what ``pybuild`` produces and
+  generates runtime dependencies and maintainer scripts.
+  It fixes some common mistakes, like installing files into
   ``site-packages`` instead of ``dist-packages``, ``/usr/local/bin/`` 
   shebangs, removes ``.py`` files from ``-dbg`` packages, etc.)
 
@@ -22,21 +22,10 @@ in Debian.
   installed; you need it in ``Build-Depends`` in order to run tests anyway).
   See *dependencies* section in ``dh_python3``'s manpage for more details.
 
-  * ``dh_python2`` works on ``./debian/python-foo/`` files and other binary
-    packages that have ``${python:Depends}`` in the ``Depends`` field.
-    It ignores Python 3.X and PyPy specific directories.
-    See ``dh_python2`` manpage for more details.
-  
   * ``dh_python3`` works on ``./debian/python3-foo/`` files and other binary
     packages that have ``${python3:Depends}`` in the ``Depends`` field.
-    It ignores Python 2.X and PyPy specific directories.
+    It ignores Python 2.X and PyPy2 specific directories.
     See ``dh_python3`` manpage for more details.
-  
-  * ``dh_pypy`` works on ``./debian/pypy-foo/`` files and other binary
-    packages that have ``${pypy:Depends}`` in the ``Depends`` field.
-    It ignores Python 2.X and Python 3.X specific directories.
-    See ``dh_pypy`` manpage for more details.
-
 
 How it works
 ============
@@ -90,9 +79,7 @@ A simplified work flow looks like this:
 
     plenty_of_other_dh_foo_tools_invoked_here
 
-    dh_python2
     dh_python3
-    dh_pypy
 
     plenty_of_other_dh_foo_tools_invoked_here
 
@@ -112,23 +99,19 @@ REQUESTED_INTERPRETERS
 is parsed from ``Build-Depends`` if ``--buildsystem=pybuild`` is set.  If it's
 not, you have to pass ``--interpreter`` to ``pybuild`` (more in its manpage)
 
-* ``python{3,}-all{,-dev}`` - all CPython interpreters (for packages that
+* ``python3-all{,-dev}`` - all CPython interpreters (for packages that
   provide public modules / extensions)
-* ``python{3,}-all-dbg`` - all CPython debug interpreters (if ``-dbg`` package
+* ``python3-all-dbg`` - all CPython debug interpreters (if ``-dbg`` package
   is provided)
-* ``python{3,}`` - default CPython or closest to default interpreter only (use
+* ``python3`` - default CPython or closest to default interpreter only (use
   this if you build a Python application)
-* ``python{3,}-dbg`` - default CPython debug (or closest to the default one)
+* ``python3-dbg`` - default CPython debug (or closest to the default one)
   only
-* ``pypy`` - PyPy interpreter
-
 
 REQUESTED_VERSIONS
 ------------------
 
-is parsed from ``X-Python{,3}-Version`` and ``Build-Depends`` (the right
-``X-*-Version`` is parsed based on interpreters listed in ``Build-Depends``,
-see above) See also Debian Python Policy for ``X-Python-Version`` description.
+is parsed from ``X-Python3-Version`` and ``Build-Depends``.
 
 
 BEFORE and AFTER commands
@@ -180,7 +163,7 @@ How to override ``pybuild`` autodetected options:
 
    export PYBUILD_TEST_ARGS={dir}/tests/
 
-How to override dh_python* options:
+How to override dh_python3 options:
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
  * via command line, f.e.

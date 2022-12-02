@@ -10,24 +10,10 @@ Depends:
  python3-all-dev
 Restrictions: allow-stderr
 
-Tests: dh-python2
-Depends:
- build-essential,
- debhelper,
- dh-python,
- fakeroot,
- libjs-jquery,
- python-all-dbg,
- python-all-dev
-Restrictions: allow-stderr
-
 Tests: nosetests
 Depends:
  dh-python,
  flit,
- pypy,
- python-all,
- python-all-dbg,
  python3-all,
  python3-all-dbg,
  python3-nose2
@@ -47,16 +33,4 @@ Depends:
  python3-setuptools,
  python3-tomli,
  tox
-Restrictions: allow-stderr
-
-Tests: pybuild-py2
-Depends:
- build-essential,
- debhelper,
- dh-python,
- fakeroot,
- python-all,
- python-setuptools,
- python3-all,
- python3-setuptools
 Restrictions: allow-stderr

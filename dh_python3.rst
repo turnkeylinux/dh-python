@@ -234,5 +234,5 @@ SEE ALSO
 * /usr/share/doc/dh-python/README.PyDist
 * pybuild(1)
 * py3compile(1), py3clean(1)
-* dh_python2(1), pycompile(1), pyclean(1)
+* pycompile(1), pyclean(1)
 * http://deb.li/dhp3 - most recent version of this document

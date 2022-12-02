@@ -5,7 +5,7 @@ PyDist files
 DISTNAME [VRANGE] [DEPENDENCY][; [PEP386] [RULES]]
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-PyDist files help tools like dh_python2/3 to translate Python dependencies
+PyDist files help tools like dh_python3 to translate Python dependencies
 (from setup.py's install_requires or egg's requires.txt file) to Debian
 dependencies if given Python distribution file / directory is not installed
 (hint: add proper package to Build-Depends and PyDist file might not be needed)
@@ -19,16 +19,9 @@ dh_python3 is checking these locations for overrides:
  * /usr/share/dh-python/dist/cpython3_fallback
 
 debian/python3-foo.pydist is copied into /usr/share/python3/dist/ automatically.
- 
-For Python 2.X it's adequately: pydist-overrides, /usr/share/python/dist/* and
-/usr/share/dh-python/dist/cpython2_fallback
-
-For PyPy it's adequately: pypydist-overrides, /usr/share/pypy/dist/* and
-/usr/share/dh-python/dist/pypy_fallback
 
 *NOTE:* There's no need to add an override if build-depending on a package that
 provides searched egg-info results in correctly recognized dependency.
-
 
 Required fields:
 ~~~~~~~~~~~~~~~~
@@ -97,9 +90,6 @@ Notes:
 You can use multiple lines if binary package provides more than one Python
 distribution or if you want to specify different dependencies for each Python
 version or version range.
-
-If you use dh_python2, it will install debian/binary_package_name.pydist file
-to /usr/share/dh-python/dist/cpython2/binary_package_name automatically.
 
 If you use dh_python3, it will install debian/binary_package_name.pydist file
 to /usr/share/dh-python/dist/cpython3/binary_package_name automatically.

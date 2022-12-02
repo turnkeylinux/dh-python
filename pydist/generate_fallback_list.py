@@ -105,9 +105,8 @@ for source in SOURCES:
         data += str(decompress(source_data), encoding='ISO-8859-15')
 
 result = {
-    'cpython2': {},
-    'cpython3': {},
-    'pypy': {}}
+    'cpython3': {}
+}
 
 # Contents file doesn't contain comment these days
 is_header = not data.startswith('bin')

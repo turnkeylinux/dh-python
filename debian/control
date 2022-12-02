@@ -24,26 +24,16 @@ Depends: ${misc:Depends}, ${python3:Depends},
 # depend on distutils to avoid adding it to Build-Depends in other packages
  python3-distutils | python3 (<< 3.6.5~rc1-1)
 Provides:
- dh-sequence-pypy,
- dh-sequence-python2,
  dh-sequence-python3,
 Suggests: libdpkg-perl, dpkg-dev, flit, python3-build, python3-tomli, python3-installer
 Breaks:
 # due to /usr/bin/dh_python3 and debhelper files
  python3 (<< 3.3.2-4~),
-# due to /usr/bin/dh_python2 and debhelper files
- python (<< 2.7.18-2),
- python2 (<< 2.7.18-2)
-Replaces: python (<< 2.7.18-2), python2 (<< 2.7.18-2)
 Description: Debian helper tools for packaging Python libraries and applications
  This package contains:
   * pybuild - invokes various build systems for requested Python versions in
     order to build modules and extensions
-  * dh_python2 - calculates Python 2.X dependencies for Debian packages,
-    adds maintainer scripts to byte compile files, etc.
   * dh_python3 - calculates Python 3.X dependencies for Debian packages,
-    adds maintainer scripts to byte compile files, etc.
-  * dh_pypy - calculates PyPy dependencies for Debian packages,
     adds maintainer scripts to byte compile files, etc.
 
 Package: pybuild-plugin-pyproject
