@@ -56,6 +56,7 @@ Depends:
  dh-python (= ${source:Version}),
  debhelper,
  make,
+ ${misc:Depends}
 Description: pybuild autopkgtest test runner (metapackage)
  This package depends on the packages required to run pybuild-autopkgtest, a
  pybuild-based autopkgtest test runner. pybuild-autopkgtest will run the same
