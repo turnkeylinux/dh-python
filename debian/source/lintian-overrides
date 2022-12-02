@@ -1,2 +1,10 @@
+# We call dh_python3 from the local tree
 python3-depends-but-no-python3-helper dh-python
-build-depends-on-python-dev-with-no-arch-any
+# This is a data file in a test package, symlink instead of duplicating
+absolute-symbolic-link-target-in-source /usr/share/javascript/jquery/jquery.js [tests/t301/lib/foo/jquery.js]
+# These tests exercise the installed binaries, and can't easily test multiple
+# Python versions
+test-leaves-python-version-untested [debian/tests/dh-python]
+test-leaves-python-version-untested [debian/tests/nosetests]
+test-leaves-python-version-untested [debian/tests/pybuild-autopkgtest]
+test-leaves-python-version-untested [debian/tests/pybuild]
