@@ -137,6 +137,9 @@ for line in data.splitlines():
                 sensible_pname(impl, egg_name) == pkg_name:
             continue
 
+        if impl not in result:
+            continue
+
         processed = result[impl]
         if egg_name not in processed:
             processed[egg_name] = pkg_name
