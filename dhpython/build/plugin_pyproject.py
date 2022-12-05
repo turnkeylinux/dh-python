@@ -117,19 +117,21 @@ class BuildSystem(Base):
         """ unpack the wheel into pybuild's normal  """
         log.info('Unpacking wheel built for %s with "installer" module',
                  args['interpreter'])
-        # FIXME: setuptools would use scripts-X.Y; this could use usr/bin?
-        scripts = f'{args["build_dir"]}/scripts-{args["interpreter"].version}'
-        if osp.exists(scripts):
-            log.warning('Scripts directory already exists, skipping unpack. '
-                        'Is the Python package being built twice?')
-            return
+        extras = {}
+        for extra in ('scripts', 'data'):
+            path = f'{args["build_dir"]}/{extra}-{args["interpreter"].version}'
+            if osp.exists(path):
+                log.warning(f'{extra.title()} directory already exists, '
+                            'skipping unpack. '
+                            'Is the Python package being built twice?')
+                return
+            extras[extra] = path
         destination = SchemeDictionaryDestination(
             {
                 'platlib': args['build_dir'],
                 'purelib': args['build_dir'],
-                'scripts': scripts,
-                 #FIXME is this the right dest for data?
-                'data': args['build_dir']
+                'scripts': extras['scripts'],
+                'data': extras['data'],
             },
             interpreter=args['interpreter'].binary_dv,
             script_kind='posix',
@@ -164,16 +166,17 @@ class BuildSystem(Base):
             # TODO: Introduce a version check once sysconfig is patched.
             paths = sysconfig.get_paths(scheme='posix_prefix')
 
-        # start by copying the scripts
-        for script_dir in Path(args['build_dir']).glob('scripts-*'):
-            target_dir = args['destdir'] + paths['scripts']
-            log.debug('Copying scripts directory contents from %s -> %s',
-                      script_dir, target_dir)
-            shutil.copytree(
-                script_dir,
-                target_dir,
-                dirs_exist_ok=True,
-            )
+        # start by copying the data and scripts
+        for extra in ('data', 'scripts'):
+            for src_dir in Path(args['build_dir']).glob(f'{extra}-*'):
+                target_dir = args['destdir'] + paths[extra]
+                log.debug('Copying %s directory contents from %s -> %s',
+                          extra, src_dir, target_dir)
+                shutil.copytree(
+                    src_dir,
+                    target_dir,
+                    dirs_exist_ok=True,
+                )
 
         # then copy the modules
         module_dir = args['build_dir']

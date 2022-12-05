@@ -14,6 +14,7 @@ check:
 	find .pybuild -name test-executed | grep -q test-executed
 	grep -q usr/bin/python3$$ debian/python3-foo/usr/bin/foo
 	find debian/python3-foo/usr/lib/python3/dist-packages/ -name LICENSE | { ! grep -q LICENSE; }
+	test -f debian/python3-foo/usr/share/man/man1/foo.1.gz
 
 clean:
 	./debian/rules clean
