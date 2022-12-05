@@ -6,6 +6,7 @@ dh-python (5.20221204) UNRELEASED; urgency=medium
   * Update lintian overrides.
   * Install data into the system data directory, as pip would.
     (closes: 1025485)
+  * Remove a left-over Depends on pypy in the autopkgtest.
 
  -- Stefano Rivera <stefanor@debian.org>  Fri, 02 Dec 2022 16:01:10 -0400
 

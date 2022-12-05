@@ -5,7 +5,6 @@ Depends:
  dh-python,
  fakeroot,
  libjs-jquery,
- pypy,
  python3-all-dbg,
  python3-all-dev
 Restrictions: allow-stderr
