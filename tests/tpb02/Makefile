@@ -13,6 +13,7 @@ check:
 	grep -q 'Depends:.*python3-importlib-metadata \| python3 (>> 3\.5)' debian/python3-foo/DEBIAN/control
 	grep -L 'Depends:.*tox' debian/python3-foo/DEBIAN/control | grep -q control
 	find .pybuild -name test-executed | grep -q test-executed
+	test -f debian/python3-foo/usr/share/man/man1/foo.1.gz
 
 clean:
 	./debian/rules clean
