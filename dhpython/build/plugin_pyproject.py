@@ -119,7 +119,7 @@ class BuildSystem(Base):
                  args['interpreter'])
         extras = {}
         for extra in ('scripts', 'data'):
-            path = f'{args["build_dir"]}/{extra}-{args["interpreter"].version}'
+            path = Path(args["home_dir"]) / extra
             if osp.exists(path):
                 log.warning(f'{extra.title()} directory already exists, '
                             'skipping unpack. '
@@ -168,15 +168,17 @@ class BuildSystem(Base):
 
         # start by copying the data and scripts
         for extra in ('data', 'scripts'):
-            for src_dir in Path(args['build_dir']).glob(f'{extra}-*'):
-                target_dir = args['destdir'] + paths[extra]
-                log.debug('Copying %s directory contents from %s -> %s',
-                          extra, src_dir, target_dir)
-                shutil.copytree(
-                    src_dir,
-                    target_dir,
-                    dirs_exist_ok=True,
-                )
+            src_dir = Path(args['home_dir']) / extra
+            if not src_dir.exists():
+                continue
+            target_dir = args['destdir'] + paths[extra]
+            log.debug('Copying %s directory contents from %s -> %s',
+                      extra, src_dir, target_dir)
+            shutil.copytree(
+                src_dir,
+                target_dir,
+                dirs_exist_ok=True,
+            )
 
         # then copy the modules
         module_dir = args['build_dir']
@@ -186,13 +188,12 @@ class BuildSystem(Base):
         shutil.copytree(
             module_dir,
             target_dir,
-            ignore=shutil.ignore_patterns('scripts-*'),
             dirs_exist_ok=True,
         )
 
     @shell_command
     def test(self, context, args):
-        scripts = f'{args["build_dir"]}/scripts-{args["interpreter"].version}'
-        if osp.exists(scripts):
+        scripts = Path(args["home_dir"]) / 'scripts'
+        if scripts.exists():
             context['ENV']['PATH'] = f"{scripts}:{context['ENV']['PATH']}"
         return super().test(context, args)

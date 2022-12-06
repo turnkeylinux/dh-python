@@ -9,5 +9,5 @@ class RequiredTest(TestCase):
 
     def test_entry_point_executed(self):
         path, _, __ = os.environ['PATH'].partition(":")
-        assert "scripts" in path
+        assert path.endswith("/scripts")
         subprocess.run('foo', check=True)
