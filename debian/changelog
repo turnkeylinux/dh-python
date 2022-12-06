@@ -1,4 +1,4 @@
-dh-python (5.20221204) UNRELEASED; urgency=medium
+dh-python (5.20221205) unstable; urgency=medium
 
   * Regenerate pydist.
   * Include ${misc:Depends} in pybuild-plugin-autopkgtest.
@@ -10,7 +10,7 @@ dh-python (5.20221204) UNRELEASED; urgency=medium
   * pybuild plugin: Stage the scripts and data one level up in the .pybuild
     directory (rather than have to ignore them when we install the module).
 
- -- Stefano Rivera <stefanor@debian.org>  Fri, 02 Dec 2022 16:01:10 -0400
+ -- Stefano Rivera <stefanor@debian.org>  Mon, 05 Dec 2022 21:18:44 -0400
 
 dh-python (5.20221203) experimental; urgency=medium
 
