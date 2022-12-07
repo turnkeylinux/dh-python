@@ -11,6 +11,9 @@ pass:
 	@echo "=============================================================="
 	@echo
 	pybuild-autopkgtest
+	test -f marker-before-pybuild-autopkgtest
+	test -f marker-after-pybuild-autopkgtest
+	grep '^1$$' marker-PYBUILD_AUTOPKGTEST
 	@echo '------------------------------'
 	@echo "OK: pybuild-autopkgtest passed"
 	@echo '------------------------------'

@@ -52,4 +52,11 @@ foreach my $command ($dh->pybuild_commands('test')) {
 
 close(RUN);
 chmod(0755, $run);
+$ENV{PYBUILD_AUTOPKGTEST} = "1";
+if (system("grep -q ^before-pybuild-autopkgtest: debian/rules") == 0) {
+    doit($run, "before-pybuild-autopkgtest");
+}
 doit($run, "pybuild-autopkgtest");
+if (system("grep -q ^after-pybuild-autopkgtest: debian/rules") == 0) {
+    doit($run, "after-pybuild-autopkgtest");
+}

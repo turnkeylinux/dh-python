@@ -24,3 +24,10 @@ override_dh_installinit:
 
 override_dh_python3:
 	# ignore any system dh_python3
+
+before-pybuild-autopkgtest:
+	echo $(PYBUILD_AUTOPKGTEST) > marker-PYBUILD_AUTOPKGTEST
+	touch marker-before-pybuild-autopkgtest
+
+after-pybuild-autopkgtest:
+	touch marker-after-pybuild-autopkgtest
