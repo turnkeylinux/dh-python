@@ -1,3 +1,9 @@
+dh-python (5.20221206) UNRELEASED; urgency=medium
+
+  * Fix interaction between --test-custom and distutils plugin.
+
+ -- Colin Watson <cjwatson@debian.org>  Sat, 10 Dec 2022 22:29:02 +0000
+
 dh-python (5.20221205) unstable; urgency=medium
 
   * Regenerate pydist.
