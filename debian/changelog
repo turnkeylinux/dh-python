@@ -1,3 +1,9 @@
+dh-python (5.20221206) UNRELEASED; urgency=medium
+
+  * Correct typo in nose autopkgtest.
+
+ -- Stefano Rivera <stefanor@debian.org>  Mon, 12 Dec 2022 17:03:04 -0400
+
 dh-python (5.20221205) unstable; urgency=medium
 
   * Regenerate pydist.
