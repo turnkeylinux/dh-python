@@ -1,6 +1,10 @@
 dh-python (5.20221206) UNRELEASED; urgency=medium
 
+  [ Stefano Rivera ]
   * Correct typo in nose autopkgtest.
+
+  [ Colin Watson ]
+  * Fix interaction between --test-custom and distutils plugin.
 
  -- Stefano Rivera <stefanor@debian.org>  Mon, 12 Dec 2022 17:03:04 -0400
 

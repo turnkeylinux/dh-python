@@ -574,7 +574,7 @@ def parse_args(argv):
         args.versions = versions
 
     if args.test_nose or args.test_nose2 or args.test_pytest or args.test_tox\
-       or args.system == 'custom':
+       or args.test_custom or args.system == 'custom':
         args.custom_tests = True
     else:
         args.custom_tests = False
