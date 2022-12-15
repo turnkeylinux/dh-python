@@ -6,6 +6,9 @@ dh-python (5.20221206) UNRELEASED; urgency=medium
   [ Colin Watson ]
   * Fix interaction between --test-custom and distutils plugin.
 
+  [ Antonio Terceiro ]
+  * pybuild-autopkgtest: allow autopkgtest-specific behavior in debian/rules.
+
  -- Stefano Rivera <stefanor@debian.org>  Mon, 12 Dec 2022 17:03:04 -0400
 
 dh-python (5.20221205) unstable; urgency=medium
