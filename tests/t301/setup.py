@@ -14,4 +14,4 @@ setup(name='Foo',
       package_dir={'foo': 'lib/foo'},
       package_data={'foo': ['jquery.js']},
       zip_safe=False,
-      install_requires=['Mako', 'Baz [extras]'])
+)
