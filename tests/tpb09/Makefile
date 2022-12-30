@@ -12,3 +12,6 @@ check:
 
 clean:
 	./debian/rules clean
+ifneq ($(AUTOPKGTEST_TMP),)
+	rm -r $(AUTOPKGTEST_TMP)/*
+endif

@@ -32,3 +32,8 @@ fail:
 	@echo "OK: pybuild-autopkgtest failed"
 	@echo '------------------------------'
 	@echo
+
+clean:
+ifneq ($(AUTOPKGTEST_TMP),)
+	rm -r $(AUTOPKGTEST_TMP)/*
+endif
