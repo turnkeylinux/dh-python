@@ -2,6 +2,9 @@ all: run check
 
 run:
 	@echo No build needed
+ifeq ($(AUTOPKGTEST_TMP),)
+	@echo NOTE this test uses the system pybuild-autopkgtest, not the working directory
+endif
 
 check: pass fail
 
