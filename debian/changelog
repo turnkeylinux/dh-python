@@ -12,6 +12,11 @@ dh-python (5.20221206) UNRELEASED; urgency=medium
   [ Antonio Terceiro ]
   * pybuild-autopkgtest: allow autopkgtest-specific behavior in debian/rules.
 
+  [ Stefano Rivera ]
+  * pybuild-autopkgtest: Instead of using a different buildsystem for the
+    autopkgtest runner, use a different build stage. This way, packages with
+    custom buildsystems can use pybuild-autopkgtest. (Closes: #1025737)
+
  -- Stefano Rivera <stefanor@debian.org>  Mon, 12 Dec 2022 17:03:04 -0400
 
 dh-python (5.20221205) unstable; urgency=medium

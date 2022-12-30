@@ -203,7 +203,7 @@ def main(cfg):
             home_dir.append('dbg')
         if cfg.name:
             home_dir.append(cfg.name)
-        if cfg.system == "autopkgtest":
+        if cfg.autopkgtest_only:
             base_dir = environ.get('AUTOPKGTEST_TMP')
             if not base_dir:
                 base_dir = mkdtemp(prefix='pybuild-autopkgtest-')
@@ -243,8 +243,8 @@ def main(cfg):
         env = dict(args.get('ENV', {}))
         pp = env.get('PYTHONPATH', context['ENV'].get('PYTHONPATH'))
         pp = pp.split(':') if pp else []
-        if step in {'build', 'test'}:
-            if step == 'test':
+        if step in {'build', 'test', 'autopkgtest'}:
+            if step in {'test', 'autopkgtest'}:
                 args['test_dir'] = join(args['destdir'], args['install_dir'].lstrip('/'))
                 if args['test_dir'] not in pp:
                     pp.append(args['test_dir'])
@@ -358,6 +358,8 @@ def main(cfg):
         func = plugin.install
     elif cfg.test_only:
         func = plugin.test
+    elif cfg.autopkgtest_only:
+        func = plugin.test
     elif cfg.print_args:
         func = plugin.print_args
 
@@ -388,7 +390,7 @@ def main(cfg):
                     # try to build/test other interpreters/versions even if
                     # one of them fails to make build logs more verbose:
                     failure = True
-                    if step not in ('build', 'test'):
+                    if step not in ('build', 'test', 'autopkgtest'):
                         exit(13)
                 if step == 'install':
                     move_to_ext_destdir(i, version, c)
@@ -465,6 +467,8 @@ def parse_args(argv):
                         help='invoke install step for all requested Python versions')
     action.add_argument('--test', action='store_true', dest='test_only',
                         help='invoke tests for auto-detected build system')
+    action.add_argument('--autopkgtest', action='store_true', dest='autopkgtest_only',
+                        help='invoke autopkgtests for auto-detected build system')
     action.add_argument('--list-systems', action='store_true',
                         help='list available build systems and exit')
     action.add_argument('--print', action='append', dest='print_args',

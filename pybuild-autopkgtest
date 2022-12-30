@@ -41,8 +41,7 @@ print(RUN "include debian/rules\n");
 print(RUN "pybuild-autopkgtest:\n");
 
 my $dh = Debian::Debhelper::Buildsystem::pybuild->new();
-foreach my $command ($dh->pybuild_commands('test')) {
-    push(@$command, '--system', 'autopkgtest');
+foreach my $command ($dh->pybuild_commands('autopkgtest')) {
     printf(RUN "\t@");
     for my $part (@$command) {
         printf(RUN "'%s' ", $part);

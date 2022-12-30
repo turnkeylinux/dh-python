@@ -152,7 +152,8 @@ sub pybuild_commands {
 
 		my @py3opts = ('pybuild', "--$step");
 
-		if ($step eq 'test' and $ENV{'PYBUILD_TEST_PYTEST'} ne '1' and
+		if (($step eq 'test' or $step eq 'autopkgtest') and
+				$ENV{'PYBUILD_TEST_PYTEST'} ne '1' and
 				$ENV{'PYBUILD_TEST_NOSE2'} ne '1' and
 				$ENV{'PYBUILD_TEST_NOSE'} ne '1' and
 				$ENV{'PYBUILD_TEST_CUSTOM'} ne '1' and
