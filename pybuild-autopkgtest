@@ -27,35 +27,42 @@ use File::Temp qw( tempdir );
 use Debian::Debhelper::Buildsystem::pybuild;
 use Debian::Debhelper::Dh_Lib qw(doit);
 
+sub main {
+    my $tmpdir = tempdir( CLEANUP => 1);
+    my $run = "${tmpdir}/run";
+    open(RUN, ">", $run) or die($!);
+    print(RUN "#!/usr/bin/make -f\n");
+    print(RUN "include debian/rules\n");
+    print(RUN "pybuild-autopkgtest:\n");
+    printf(RUN "\tpybuild-autopkgtest\n");
+    close(RUN);
+    chmod(0755, $run);
+    $ENV{PYBUILD_AUTOPKGTEST} = "1";
+    if (system("grep -q ^before-pybuild-autopkgtest: debian/rules") == 0) {
+        doit($run, "before-pybuild-autopkgtest");
+    }
+    doit($run, "pybuild-autopkgtest");
+    if (system("grep -q ^after-pybuild-autopkgtest: debian/rules") == 0) {
+        doit($run, "after-pybuild-autopkgtest");
+    }
+}
+
+sub child {
+    # The child inherits the environment defined in debian/rules
+    my $dh = Debian::Debhelper::Buildsystem::pybuild->new();
+    foreach my $command ($dh->pybuild_commands('autopkgtest')) {
+        doit(@$command);
+    }
+}
+
 if (scalar(@ARGV) > 0) {
     my $prog = basename($0);
     print STDERR "usage: ${prog}\n";
     exit(1);
 }
 
-my $tmpdir = tempdir( CLEANUP => 1);
-my $run = "${tmpdir}/run";
-open(RUN, ">", $run) or die($!);
-print(RUN "#!/usr/bin/make -f\n");
-print(RUN "include debian/rules\n");
-print(RUN "pybuild-autopkgtest:\n");
-
-my $dh = Debian::Debhelper::Buildsystem::pybuild->new();
-foreach my $command ($dh->pybuild_commands('autopkgtest')) {
-    printf(RUN "\t@");
-    for my $part (@$command) {
-        printf(RUN "'%s' ", $part);
-    }
-    print RUN "\n";
-}
-
-close(RUN);
-chmod(0755, $run);
-$ENV{PYBUILD_AUTOPKGTEST} = "1";
-if (system("grep -q ^before-pybuild-autopkgtest: debian/rules") == 0) {
-    doit($run, "before-pybuild-autopkgtest");
-}
-doit($run, "pybuild-autopkgtest");
-if (system("grep -q ^after-pybuild-autopkgtest: debian/rules") == 0) {
-    doit($run, "after-pybuild-autopkgtest");
+if (defined $ENV{PYBUILD_AUTOPKGTEST}) {
+    child;
+} else {
+    main;
 }
