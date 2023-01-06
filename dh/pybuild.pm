@@ -214,7 +214,7 @@ sub python_build_dependencies {
 			my $builddeps = $c->{$field};
 			while ($builddeps =~ /(?:^|[\s,])((pypy|python|tox)[0-9\.]*(-[^\s,\(]+)?)(?:[\s,\(]|$)/g) {
 				my $dep = $1;
-				$dep =~ s/:any$//;
+				$dep =~ s/:(any|native)$//;
 				if ($dep) {push @result, $dep};
 			}
 		}
