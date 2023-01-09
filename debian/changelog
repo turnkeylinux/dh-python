@@ -1,3 +1,10 @@
+dh-python (5.20230109) unstable; urgency=medium
+
+  * ignore/strip :native suffix when searching for build dependencies in
+    pybuild.pm. Thanks Joseph Nahmias for the patch.
+
+ -- Stefano Rivera <stefanor@debian.org>  Mon, 09 Jan 2023 16:29:17 -0400
+
 dh-python (5.20221230) unstable; urgency=medium
 
   [ Stefano Rivera ]
