@@ -1,4 +1,4 @@
-dh-python (5.20230110) UNRELEASED; urgency=medium
+dh-python (5.20230130) unstable; urgency=medium
 
   * pybuild.pm: Export SETUPTOOLS_SCM_PRETEND_VERSION for packages using
     python3-hatch-vcs packages.
@@ -7,7 +7,7 @@ dh-python (5.20230110) UNRELEASED; urgency=medium
     the values to 3 bytes). (Closes: #1028364)
   * Bump Standards-Version to 4.6.2, no changes needed.
 
- -- Stefano Rivera <stefanor@debian.org>  Mon, 30 Jan 2023 11:18:54 -0400
+ -- Stefano Rivera <stefanor@debian.org>  Mon, 30 Jan 2023 12:30:45 -0400
 
 dh-python (5.20230109) unstable; urgency=medium
 
