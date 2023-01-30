@@ -286,8 +286,8 @@ class VersionRange:
 
         >>> VersionRange.parse('3.0-')
         (Version('3.0'), None)
-        >>> VersionRange.parse('3.1-3.3')
-        (Version('3.1'), Version('3.3'))
+        >>> VersionRange.parse('3.1-3.13')
+        (Version('3.1'), Version('3.13'))
         >>> VersionRange.parse('3.2-4.0')
         (Version('3.2'), Version('4.0'))
         >>> VersionRange.parse('-3.7')
@@ -334,8 +334,8 @@ class VersionRange:
     def _parse_pycentral(value):
         """Parse X-Python3-Version.
 
-        >>> VersionRange._parse_pycentral('>= 3.1')
-        (Version('3.1'), None)
+        >>> VersionRange._parse_pycentral('>= 3.10')
+        (Version('3.10'), None)
         >>> VersionRange._parse_pycentral('<< 4.0')
         (None, Version('4.0'))
         >>> VersionRange._parse_pycentral('3.1')
@@ -352,15 +352,15 @@ class VersionRange:
 
             match = re.match('>=\s*([\d\.]+)', item)
             if match:
-                minv = "%.3s" % match.group(1)
+                minv = match.group(1)
                 continue
             match = re.match('<<\s*([\d\.]+)', item)
             if match:
-                maxv = "%.3s" % match.group(1)
+                maxv = match.group(1)
                 continue
             match = re.match('^[\d\.]+$', item)
             if match:
-                hardcoded.add("%.3s" % match.group(0))
+                hardcoded.add(match.group(0))
 
         if len(hardcoded) == 1:
             ver = hardcoded.pop()

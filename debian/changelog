@@ -3,6 +3,8 @@ dh-python (5.20230110) UNRELEASED; urgency=medium
   * pybuild.pm: Export SETUPTOOLS_SCM_PRETEND_VERSION for packages using
     python3-hatch-vcs packages.
   * Update pydist fallback.
+  * Handle 2-digit minor versions in X-Python3-Version parsing (stop limiting
+    the values to 3 bytes). (Closes: #1028364)
 
  -- Stefano Rivera <stefanor@debian.org>  Mon, 30 Jan 2023 11:18:54 -0400
 
