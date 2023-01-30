@@ -127,7 +127,7 @@ sub pybuild_commands {
 		# Without this, setuptools-scm tries to detect current
 		# version from git tag, which fails for debian tags
 		# (debian/<version>) sometimes.
-		if ((grep /(pypy|python[0-9\.]*)-setuptools-scm/, @deps) && !$ENV{'SETUPTOOLS_SCM_PRETEND_VERSION'}) {
+		if ((grep /python3-(setuptools-scm|hatch-vcs)/, @deps) && !$ENV{'SETUPTOOLS_SCM_PRETEND_VERSION'}) {
 			my $changelog = Dpkg::Changelog::Debian->new(range => {"count" => 1});
 			$changelog->load("debian/changelog");
 			my $version = @{$changelog}[0]->get_version();

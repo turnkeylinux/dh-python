@@ -1,3 +1,10 @@
+dh-python (5.20230110) UNRELEASED; urgency=medium
+
+  * pybuild.pm: Export SETUPTOOLS_SCM_PRETEND_VERSION for packages using
+    python3-hatch-vcs packages.
+
+ -- Stefano Rivera <stefanor@debian.org>  Mon, 30 Jan 2023 11:18:54 -0400
+
 dh-python (5.20230109) unstable; urgency=medium
 
   * ignore/strip :native suffix when searching for build dependencies in
