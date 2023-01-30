@@ -141,7 +141,7 @@ sub pybuild_commands {
 		# Without this, python-pbr tries to detect current
 		# version from pkg metadata or git tag, which fails for debian tags
 		# (debian/<version>) sometimes.
-		if ((grep /(pypy|python[0-9\.]*)-pbr/, @deps) && !$ENV{'PBR_VERSION'}) {
+		if ((grep /python3-pbr/, @deps) && !$ENV{'PBR_VERSION'}) {
 			my $changelog = Dpkg::Changelog::Debian->new(range => {"count" => 1});
 			$changelog->load("debian/changelog");
 			my $version = @{$changelog}[0]->get_version();
