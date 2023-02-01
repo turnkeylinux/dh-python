@@ -2,7 +2,7 @@
 PyDist files
 ============
 
-DISTNAME [VRANGE] [DEPENDENCY][; [PEP386] [RULES]]
+DISTNAME [VRANGE] [DEPENDENCY][; [PEP386|PEP440] [RULES]]
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 PyDist files help tools like dh_python3 to translate Python dependencies
@@ -69,15 +69,19 @@ Examples:
  * python3-jinja2 | python3 (>= 3.0)
  * python3-sqlalchemy (>= 0.5), python3-sqlalchemy (<< 0.6)
 
+PEP440
+``````
+Standards flag: upstream uses versioning schema described in PEP 440.
+
 PEP386
 ``````
 Standards flag: upstream uses versioning schema described in PEP 386.
 
 RULES
 `````
-Rules needed to translate upstream version to Debian one. If PEP386 is
-set, its rules will be applied later. Multiple rules are allowed, separate them
-with a space.
+Rules needed to translate upstream version to Debian one. If
+PEP386 or PEP440 is set, its rules will be applied later. Multiple rules
+are allowed, separate them with a space.
 
 Examples:
  * s/^/2:/
@@ -100,13 +104,13 @@ Complete examples:
  * SQLAlchemy python-sqlalchemy (>= 0.5), python-sqlalchemy (<< 0.6)
  * Mako python-mako; PEP386
  * foo -2.5 python-oldfoo; s/^/3:/
- * foo 2.5- python-foo; PEP386
+ * foo 2.5- python-foo; PEP440
  * Bar 2.6-
 
  * SQLAlchemy python3-sqlalchemy (>= 0.5), python3-sqlalchemy (<< 0.6)
  * Mako python3-mako; PEP386
  * foo -3.2 python3-oldfoo; s/^/3:/
- * foo 3.2- python3-foo; PEP386
+ * foo 3.2- python3-foo; PEP440
  * Bar 2.6-
 
 .. vim: ft=rst

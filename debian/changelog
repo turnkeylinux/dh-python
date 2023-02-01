@@ -1,3 +1,10 @@
+dh-python (5.20230131) UNRELEASED; urgency=medium
+
+  * Add support for PEP440 standards-markers in PyDist files (which superseded
+    PEP386 almost a decade ago).
+
+ -- Stefano Rivera <stefanor@debian.org>  Wed, 01 Feb 2023 18:00:32 -0400
+
 dh-python (5.20230130) unstable; urgency=medium
 
   * pybuild.pm: Export SETUPTOOLS_SCM_PRETEND_VERSION for packages using

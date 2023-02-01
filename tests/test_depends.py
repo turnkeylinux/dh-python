@@ -120,13 +120,13 @@ class TestRequiresCPython3(DependenciesTestCase):
     pydist = {
         'bar': 'python3-bar',
         'baz': {'dependency': 'python3-baz', 'standard': 'PEP386'},
-        'quux': {'dependency': 'python3-quux', 'standard': 'PEP386'},
+        'quux': {'dependency': 'python3-quux', 'standard': 'PEP440'},
     }
     requires = {
         'debian/foo/usr/lib/python3/dist-packages/foo.egg-info/requires.txt': (
             'bar',
             'baz >= 1.0',
-            'quux',
+            'quux >= 1.0a1',
         ),
     }
 
@@ -136,6 +136,9 @@ class TestRequiresCPython3(DependenciesTestCase):
     def test_depends_on_baz(self):
         self.assertIn('python3-baz (>= 1.0)', self.d.depends)
 
+    def test_depends_on_quux(self):
+        self.assertIn('python3-quux (>= 1.0~a1)', self.d.depends)
+
 
 class TestRequiresPyPy(DependenciesTestCase):
     impl = 'pypy'
@@ -143,13 +146,13 @@ class TestRequiresPyPy(DependenciesTestCase):
     pydist = {
         'bar': 'pypy-bar',
         'baz': {'dependency': 'pypy-baz', 'standard': 'PEP386'},
-        'quux': {'dependency': 'pypy-quux', 'standard': 'PEP386'},
+        'quux': {'dependency': 'pypy-quux', 'standard': 'PEP440'},
     }
     requires = {
         'debian/foo/usr/lib/pypy/dist-packages/foo.egg-info/requires.txt': (
             'bar',
             'baz >= 1.0',
-            'quux',
+            'quux >= 1.0a1',
         )
     }
 
@@ -158,6 +161,9 @@ class TestRequiresPyPy(DependenciesTestCase):
 
     def test_depends_on_baz(self):
         self.assertIn('pypy-baz (>= 1.0)', self.d.depends)
+
+    def test_depends_on_quux(self):
+        self.assertIn('pypy-quux (>= 1.0~a1)', self.d.depends)
 
 
 class TestRequiresCompatible(DependenciesTestCase):

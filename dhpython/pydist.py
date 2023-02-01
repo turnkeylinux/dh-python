@@ -48,7 +48,7 @@ PYDIST_RE = re.compile(r"""
     (?P<dependency>(?:[a-z][^;]*)?)              # Debian dependency
     (?:  # optional upstream version -> Debian version translator
         ;\s*
-        (?P<standard>PEP386)?                    # PEP-386 mode
+        (?P<standard>PEP386|PEP440)?             # PEP-386 / PEP-440 mode
         \s*
         (?P<rules>(?:s|tr|y).*)?                 # translator rules
     )?
@@ -588,7 +588,8 @@ def ci_regexp(name):
     return ''.join("[%s%s]" % (i.upper(), i) if i.isalpha() else i for i in name.lower())
 
 
-PRE_VER_RE = re.compile(r'[-.]?(alpha|beta|rc|dev|a|b|c)')
+PEP386_PRE_VER_RE = re.compile(r'[-.]?(alpha|beta|rc|dev|a|b|c)')
+PEP440_PRE_VER_RE = re.compile(r'[-.]?(a|b|rc)')
 GROUP_RE = re.compile(r'\$(\d+)')
 
 
@@ -660,7 +661,9 @@ def _translate(version, rules, standard):
         else:
             log.warn('unknown rule ignored: %s', rule)
     if standard == 'PEP386':
-        version = PRE_VER_RE.sub(r'~\g<1>', version)
+        version = PEP386_PRE_VER_RE.sub(r'~\g<1>', version)
+    elif standard == 'PEP440':
+        version = PEP440_PRE_VER_RE.sub(r'~\g<1>', version)
     return version
 
 

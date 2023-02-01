@@ -69,7 +69,7 @@ Both files have the same format described in
 `/usr/share/doc/dh-python/README.PyDist`. If all you want is to generate
 versioned dependencies (and assuming that the *python3-bar* package provides
 the *pybar* Python module), in most cases it will be sufficient to put the line
-``pybar python3-bar; PEP386`` into either of the above files.
+``pybar python3-bar; PEP440`` into either of the above files.
 
 private dirs
 ~~~~~~~~~~~~
