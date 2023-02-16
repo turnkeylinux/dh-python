@@ -24,7 +24,7 @@ Depends:
  debhelper,
  dh-python,
  pybuild-plugin-pyproject,
- flit,
+ flit (>= 3.7),
  fakeroot,
  python3-all-dev,
  python3-poetry-core,

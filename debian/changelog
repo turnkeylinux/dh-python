@@ -1,6 +1,7 @@
 dh-python (5.20230130~bpo11+1) bullseye-backports; urgency=medium
 
   * Rebuild for bullseye-backports.
+  * Bump flit depend in autopkgtest, for external-data support.
 
  -- Stefano Rivera <stefanor@debian.org>  Thu, 16 Feb 2023 12:59:11 -0400
 
