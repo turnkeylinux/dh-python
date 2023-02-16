@@ -96,9 +96,12 @@ class ShareFilesTestCase(MergeWheelTestCase):
 class HatchlingLicenseTest(ShareFilesTestCase):
     files = {
         'foo.dist-info/license_files/LICENSE.txt': ('foo'),
+        'foo.dist-info/licenses/COPYING': ('foo'),
         'foo.dist-info/RECORD': (
             'foo.dist-info/license_files/LICENSE.txt,sha256=2c26b46b68ffc68ff99'
             'b453c1d30413413422d706483bfa0f98a5e886266e7ae,4',
+            'foo.dist-info/licenses/COPYING,sha256=2c26b46b68ffc68ff99b453c1d30'
+            '413413422d706483bfa0f98a5e886266e7ae,4',
             'foo.dist-info/WHEEL,sha256=447fb61fa39a067229e1cce8fc0953bfced53ea'
             'c85d1844f5940f51c1fcba725,6'),
         'foo.dist-info/WHEEL': ('foo'),
@@ -107,6 +110,33 @@ class HatchlingLicenseTest(ShareFilesTestCase):
     def test_removes_license_files(self):
         self.assertFalse(
             self.destPath('foo.dist-info/license_files/LICENSE.txt').exists())
+        self.assertFalse(
+            self.destPath('foo.dist-info/licenses/COPYING').exists())
+
+    def test_removes_license_files_from_record(self):
+        print("Checking", self.destPath('foo.dist-info/RECORD'))
+        self.assertFileContents(self.destPath('foo.dist-info/RECORD'),
+            'foo.dist-info/WHEEL,sha256=447fb61fa39a067229e1cce8fc0953bfced53ea'
+            'c85d1844f5940f51c1fcba725,6\n')
+
+
+class FlitLicenseTest(ShareFilesTestCase):
+    files = {
+        'foo.dist-info/COPYING': ('foo'),
+        'foo.dist-info/COPYING.LESSER': ('foo'),
+        'foo.dist-info/RECORD': (
+            'foo.dist-info/COPYING,sha256=2c26b46b68ffc68ff99b453c1d30413413422'
+            'd706483bfa0f98a5e886266e7ae,4',
+            'foo.dist-info/COPYING.LESSER,sha256=2c26b46b68ffc68ff99b453c1d3041'
+            '3413422d706483bfa0f98a5e886266e7ae,4',
+            'foo.dist-info/WHEEL,sha256=447fb61fa39a067229e1cce8fc0953bfced53ea'
+            'c85d1844f5940f51c1fcba725,6'),
+        'foo.dist-info/WHEEL': ('foo'),
+    }
+
+    def test_removes_license_files(self):
+        self.assertFalse(self.destPath('foo.dist-info/COPYING.LESSER').exists())
+        self.assertFalse(self.destPath('foo.dist-info/COPYING').exists())
 
     def test_removes_license_files_from_record(self):
         print("Checking", self.destPath('foo.dist-info/RECORD'))

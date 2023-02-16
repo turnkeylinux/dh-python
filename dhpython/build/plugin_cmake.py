@@ -36,9 +36,18 @@ class BuildSystem(Base):
     def configure(self, context, args):
         return ('dh_auto_configure --buildsystem=cmake'
                 ' --builddirectory={build_dir} --'
+                # FindPythonInterp:
                 ' -DPYTHON_EXECUTABLE:FILEPATH=/usr/bin/{interpreter}'
                 ' -DPYTHON_LIBRARY:FILEPATH={interpreter.library_file}'
                 ' -DPYTHON_INCLUDE_DIR:PATH={interpreter.include_dir}'
+                # FindPython:
+                ' -DPython_EXECUTABLE=/usr/bin/{interpreter}'
+                ' -DPython_LIBRARY={interpreter.library_file}'
+                ' -DPython_INCLUDE_DIR={interpreter.include_dir}'
+                # FindPython3:
+                ' -DPython3_EXECUTABLE=/usr/bin/{interpreter}'
+                ' -DPython3_LIBRARY={interpreter.library_file}'
+                ' -DPython3_INCLUDE_DIR={interpreter.include_dir}'
                 ' {args}')
 
     @shell_command

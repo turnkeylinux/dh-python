@@ -16,3 +16,8 @@ check:
 	# make sure /usr/share/doc/ is ignored
 	grep -q -v "py3compile -p foo /usr/share/doc"\
 		debian/foo/DEBIAN/postinst
+	# -X made it into the postinst
+	grep -qF "/usr/share/bar -X 'spam.py'" debian/foo/DEBIAN/postinst
+	# Check argument parsing order
+	grep -q '#! /usr/bin/python3-dbg' debian/overrides/usr/share/overrides1/foo.py
+	grep -q '#! /usr/bin/python3-dbg' debian/overrides/usr/share/overrides2/foo.py

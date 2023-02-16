@@ -125,7 +125,7 @@ def validate(fpath):
 
 @memoize
 def load(impl):
-    """Load iformation about installed Python distributions.
+    """Load information about installed Python distributions.
 
     :param impl: interpreter implementation, f.e. cpython2, cpython3, pypy
     :type impl: str
@@ -140,7 +140,8 @@ def load(impl):
     if isdir(dname):
         to_check.extend(join(dname, i) for i in os.listdir(dname))
 
-    fbname = '/usr/share/dh-python/dist/{}_fallback'.format(impl)
+    fbdir = os.environ.get('DH_PYTHON_DIST', '/usr/share/dh-python/dist/')
+    fbname = join(fbdir, '{}_fallback'.format(impl))
     if exists(fbname):  # fall back generated at dh-python build time
         to_check.append(fbname)  # last one!
 
@@ -203,20 +204,24 @@ def guess_dependency(impl, req, version=None, bdep=None,
     name = req_d['name']
     details = data.get(name.lower())
     if details:
+        log.debug("dependency: module seems to be installed")
         for item in details:
             if version and version not in item.get('versions', version):
                 # rule doesn't match version, try next one
                 continue
             if not item['dependency']:
+                log.debug("dependency: requirement ignored")
                 return  # this requirement should be ignored
             if item['dependency'].endswith(')'):
                 # no need to translate versions if version is hardcoded in
                 # Debian dependency
+                log.debug("dependency: requirement already has hardcoded version")
                 return item['dependency'] + env_marker_alts
             if req_d['operator'] == '==' and req_d['version'].endswith('*'):
                 # Translate "== 1.*" to "~= 1.0"
                 req_d['operator'] = '~='
                 req_d['version'] = req_d['version'].replace('*', '0')
+                log.debug("dependency: translated wildcard version to semver limit")
             if req_d['version'] and (item['standard'] or item['rules']) and\
                     req_d['operator'] not in (None, '!='):
                 o = _translate_op(req_d['operator'])
@@ -233,6 +238,7 @@ def guess_dependency(impl, req, version=None, bdep=None,
                     v2 = _translate(_max_compatible(req_d['version']), item['rules'], item['standard'])
                     d += ", %s (%s %s)%s" % (
                         item['dependency'], o2, v2, env_marker_alts)
+                log.debug("dependency: constructed version")
                 return d
             elif accept_upstream_versions and req_d['version'] and \
                     req_d['operator'] not in (None,'!='):
@@ -249,16 +255,19 @@ def guess_dependency(impl, req, version=None, bdep=None,
                     d += ", %s (%s %s)%s" % (
                         item['dependency'], o2,
                         _max_compatible(req_d['version']), env_marker_alts)
+                log.debug("dependency: constructed upstream version")
                 return d
             else:
                 if item['dependency'] in bdep:
                     if None in bdep[item['dependency']] and bdep[item['dependency']][None]:
+                        log.debug("dependency: included in build-deps with limits ")
                         return "{} ({}){}".format(
                             item['dependency'], bdep[item['dependency']][None],
                             env_marker_alts)
                     # if arch in bdep[item['dependency']]:
                     # TODO: handle architecture specific dependencies from build depends
                     #       (current architecture is needed here)
+                log.debug("dependency: included in build-deps")
                 return item['dependency'] + env_marker_alts
 
     # search for Egg metadata file or directory (using dpkg -S)
@@ -284,6 +293,7 @@ def guess_dependency(impl, req, version=None, bdep=None,
         elif not result:
             log.debug('dpkg -S did not find package for %s', name)
         else:
+            log.debug('dependency: found a result with dpkg -S')
             return result.pop() + env_marker_alts
     else:
         log.debug('dpkg -S did not find package for %s: %s', name, stderr)
@@ -345,22 +355,23 @@ def check_environment_marker_restrictions(req, marker_str, impl):
 
     elif marker in ('python_version', 'python_full_version',
                         'implementation_version'):
+        # TODO: Replace with full PEP-440 parser
         env_ver = value
-        int_ver = value.split('.')
+        split_ver = value.split('.')
         if marker == 'python_version':
             version_parts = 2
         elif marker == 'python_full_version':
             version_parts = 3
         else:
-            version_parts = len(int_ver)
+            version_parts = len(split_ver)
 
         if '*' in env_ver:
-            if int_ver.index('*') != len(int_ver) -1:
+            if split_ver.index('*') != len(split_ver) -1:
                 log.info('Skipping requirement with intermediate wildcard: %s',
                          req)
                 return False
-            int_ver.pop()
-            env_ver = '.'.join(int_ver)
+            split_ver.pop()
+            env_ver = '.'.join(split_ver)
             if op == '==':
                 if marker == 'python_full_version':
                     marker = 'python_version'
@@ -380,7 +391,16 @@ def check_environment_marker_restrictions(req, marker_str, impl):
                          op, req)
                 return False
 
-        int_ver = [int(x) for x in int_ver]
+        int_ver = []
+        for ver_part in split_ver:
+            if ver_part.isdigit():
+                int_ver.append(int(ver_part))
+            else:
+                env_ver = '.'.join(str(x) for x in int_ver)
+                log.info('Truncating unparseable version %s to %s in %s',
+                         value, env_ver, req)
+                break
+
         if len(int_ver) < version_parts:
             int_ver.append(0)
             env_ver += '.0'

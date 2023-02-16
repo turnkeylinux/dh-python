@@ -1,0 +1,30 @@
+#!/usr/bin/make -f
+
+export PYBUILD_NAME=foo
+
+%:
+	dh $@
+
+override_dh_auto_build:
+	../../pybuild -d foo --build --verbose --name=foo
+	../../pybuild -d bar --build --verbose --name=bar
+
+override_dh_auto_install:
+	../../pybuild -d foo --install --name=foo
+	../../pybuild -d bar --install --name=bar
+
+override_dh_auto_test:
+	../../pybuild -d foo --test --name=foo
+	../../pybuild -d bar --test --name=bar
+
+override_dh_auto_clean:
+	../../pybuild -d foo --clean --verbose --name=foo
+	../../pybuild -d bar --clean --verbose --name=bar
+	rm -rf .pybuild foo/foo.egg-info bar/bar.egg-info
+
+override_dh_installinit:
+	DH_VERBOSE=1 ../../dh_python3
+	dh_installinit
+
+override_dh_python3:
+	# ignore any system dh_python3

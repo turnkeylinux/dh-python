@@ -34,7 +34,7 @@ sub new {
 			$this->{pydef} = `pyversions -vd 2>/dev/null`;}
 		$this->{pydef} =~ s/\s+$//;
 		if ($ENV{'DEBPYTHON_SUPPORTED'}) {
-			$this->{pyvers} = $ENV{'DEBPYTHON_SUPPORTED'};}
+			$this->{pyvers} = $ENV{'DEBPYTHON_SUPPORTED'} =~ s/,/ /r;}
 		else {
 			$this->{pyvers} = `pyversions -vr 2>/dev/null`;}
 		$this->{pyvers} =~ s/\s+$//;
@@ -44,12 +44,16 @@ sub new {
 			$this->{py3def} = `py3versions -vd 2>/dev/null`;}
 		$this->{py3def} =~ s/\s+$//;
 		if ($ENV{'DEBPYTHON3_SUPPORTED'}) {
-			$this->{py3vers} = $ENV{'DEBPYTHON3_SUPPORTED'};}
+			$this->{py3vers} = $ENV{'DEBPYTHON3_SUPPORTED'} =~ s/,/ /r;}
 		else {
-			$this->{py3vers} = `py3versions -vr 2>/dev/null`;}
+			$this->{py3vers} = `py3versions -vr 2>/dev/null`;
+			if ($this->{py3vers} eq "") {
+				# We swallowed stderr, above
+				system("py3versions -vr");
+				die('E: py3versions failed');
+			}
+		}
 		$this->{py3vers} =~ s/\s+$//;
-		$this->{pypydef} = `pypy -c 'from sys import pypy_version_info as i; print("%s.%s" % (i.major, i.minor))' 2>/dev/null`;
-		$this->{pypydef} =~ s/\s+$//;
 	}
 
 	return $this;
@@ -123,7 +127,7 @@ sub pybuild_commands {
 		# Without this, setuptools-scm tries to detect current
 		# version from git tag, which fails for debian tags
 		# (debian/<version>) sometimes.
-		if ((grep /(pypy|python[0-9\.]*)-setuptools-scm/, @deps) && !$ENV{'SETUPTOOLS_SCM_PRETEND_VERSION'}) {
+		if ((grep /python3-(setuptools-scm|hatch-vcs)/, @deps) && !$ENV{'SETUPTOOLS_SCM_PRETEND_VERSION'}) {
 			my $changelog = Dpkg::Changelog::Debian->new(range => {"count" => 1});
 			$changelog->load("debian/changelog");
 			my $version = @{$changelog}[0]->get_version();
@@ -137,7 +141,7 @@ sub pybuild_commands {
 		# Without this, python-pbr tries to detect current
 		# version from pkg metadata or git tag, which fails for debian tags
 		# (debian/<version>) sometimes.
-		if ((grep /(pypy|python[0-9\.]*)-pbr/, @deps) && !$ENV{'PBR_VERSION'}) {
+		if ((grep /python3-pbr/, @deps) && !$ENV{'PBR_VERSION'}) {
 			my $changelog = Dpkg::Changelog::Debian->new(range => {"count" => 1});
 			$changelog->load("debian/changelog");
 			my $version = @{$changelog}[0]->get_version();
@@ -146,22 +150,14 @@ sub pybuild_commands {
 			$ENV{'PBR_VERSION'} = $version;
 		}
 
-		my @py2opts = ('pybuild', "--$step");
 		my @py3opts = ('pybuild', "--$step");
-		my @pypyopts = ('pybuild', "--$step");
 
-		if ($step eq 'test' and $ENV{'PYBUILD_TEST_PYTEST'} ne '1' and
-		       			$ENV{'PYBUILD_TEST_NOSE2'} ne '1' and
-		       			$ENV{'PYBUILD_TEST_NOSE'} ne '1' and
-		       			$ENV{'PYBUILD_TEST_TOX'} ne '1') {
-			if (grep {$_ eq 'python-tox'} @deps and $ENV{'PYBUILD_TEST_TOX'} ne '0') {
-				push @py2opts, '--test-tox'}
-			elsif (grep {$_ eq 'python-pytest'} @deps and $ENV{'PYBUILD_TEST_PYTEST'} ne '0') {
-				push @py2opts, '--test-pytest'}
-			elsif (grep {$_ eq 'python-nose2'} @deps and $ENV{'PYBUILD_TEST_NOSE2'} ne '0') {
-				push @py2opts, '--test-nose2'}
-			elsif (grep {$_ eq 'python-nose'} @deps and $ENV{'PYBUILD_TEST_NOSE'} ne '0') {
-				push @py2opts, '--test-nose'}
+		if (($step eq 'test' or $step eq 'autopkgtest') and
+				$ENV{'PYBUILD_TEST_PYTEST'} ne '1' and
+				$ENV{'PYBUILD_TEST_NOSE2'} ne '1' and
+				$ENV{'PYBUILD_TEST_NOSE'} ne '1' and
+				$ENV{'PYBUILD_TEST_CUSTOM'} ne '1' and
+				$ENV{'PYBUILD_TEST_TOX'} ne '1') {
 			if (grep {$_ eq 'tox'} @deps and $ENV{'PYBUILD_TEST_TOX'} ne '0') {
 				push @py3opts, '--test-tox'}
 			elsif (grep {$_ eq 'python3-pytest'} @deps and $ENV{'PYBUILD_TEST_PYTEST'} ne '0') {
@@ -170,41 +166,12 @@ sub pybuild_commands {
 				push @py3opts, '--test-nose2'}
 			elsif (grep {$_ eq 'python3-nose'} @deps and $ENV{'PYBUILD_TEST_NOSE'} ne '0') {
 				push @py3opts, '--test-nose'}
-			if (grep {$_ eq 'pypy-tox'} @deps and $ENV{'PYBUILD_TEST_TOX'} ne '0') {
-				push @pypyopts, '--test-tox'}
-			elsif (grep {$_ eq 'pypy-pytest'} @deps and $ENV{'PYBUILD_TEST_PYTEST'} ne '0') {
-				push @pypyopts, '--test-pytest'}
-			elsif (grep {$_ eq 'pypy-nose'} @deps and $ENV{'PYBUILD_TEST_NOSE'} ne '0') {
-				push @pypyopts, '--test-nose'}
 		}
 
-		my $pyall = 0;
-		my $pyalldbg = 0;
 		my $py3all = 0;
 		my $py3alldbg = 0;
 
 		my $i = 'python{version}';
-
-		# Python
-		if ($this->{pyvers}) {
-			if (grep {$_ eq 'python-all' or $_ eq 'python-all-dev'} @deps) {
-				$pyall = 1;
-				push @result, [@py2opts, '-i', $i, '-p', $this->{pyvers}, @options];
-			}
-			if (grep {$_ eq 'python-all-dbg'} @deps) {
-				$pyalldbg = 1;
-				push @result, [@py2opts, '-i', "$i-dbg", '-p', $this->{pyvers}, @options];
-			}
-		}
-		if ($this->{pydef}) {
-			if (not $pyall and grep {$_ eq 'python' or $_ eq 'python-dev' or
-				       		 $_ eq 'python2.7' or $_ eq 'python2.7-dev'} @deps) {
-				push @result, [@py2opts, '-i', $i, '-p', $this->{pydef}, @options];
-			}
-			if (not $pyalldbg and grep {$_ eq 'python-dbg' or $_ eq 'python2.7-dbg'} @deps) {
-				push @result, [@py2opts, '-i', "$i-dbg", '-p', $this->{pydef}, @options];
-			}
-		}
 
 		# Python 3
 		if ($this->{py3vers}) {
@@ -227,10 +194,6 @@ sub pybuild_commands {
 		}
 		# TODO: pythonX.Y → `pybuild -i python{version} -p X.Y`
 
-		# PyPy
-		if ($this->{pypydef} and grep {$_ eq 'pypy'} @deps) {
-			push @result, [@pypyopts, '-i', 'pypy', '-p', $this->{pypydef}, @options];
-		}
 	}
 	if (!@result) {
 		use Data::Dumper;
@@ -251,7 +214,7 @@ sub python_build_dependencies {
 			my $builddeps = $c->{$field};
 			while ($builddeps =~ /(?:^|[\s,])((pypy|python|tox)[0-9\.]*(-[^\s,\(]+)?)(?:[\s,\(]|$)/g) {
 				my $dep = $1;
-				$dep =~ s/:any$//;
+				$dep =~ s/:(any|native)$//;
 				if ($dep) {push @result, $dep};
 			}
 		}

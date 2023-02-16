@@ -18,6 +18,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 
+import errno
 import logging
 import re
 from os import makedirs, chmod, environ
@@ -41,6 +42,8 @@ def build_options(**options):
         'arch': None,
         'package': [],
         'no_package': [],
+        'write_log': False,
+        'remaining_packages': False,
     }
     built_options = default_options
     built_options.update(options)
@@ -58,6 +61,11 @@ class DebHelper:
         # Note that each DebHelper instance supports ONE interpreter type only
         # it's not possible to mix cpython2, cpython3 and pypy here
         self.impl = impl
+        self.command = {
+            'cpython2': 'dh_python2',
+            'cpython3': 'dh_python3',
+            'pypy': 'dh_pypy',
+        }[impl]
         skip_tpl = set()
         for name, tpls in PKG_NAME_TPLS.items():
             if name != impl:
@@ -144,6 +152,9 @@ class DebHelper:
                 continue
             if skip_pkgs and binary_package in skip_pkgs:
                 continue
+            if (options.remaining_packages and
+                    self.has_acted_on_package(binary_package)):
+                continue
             pkg = {
                 'substvars': {},
                 'autoscripts': {},
@@ -157,9 +168,12 @@ class DebHelper:
 
             if not binary_package.startswith(PKG_NAME_TPLS[impl]):
                 # package doesn't have common prefix (python-, python3-, pypy-)
-                # so lets check if Depends contains appropriate substvar
-                if substvar not in paragraph.get('depends', ''):
-                    log.debug('skipping package %s (missing %s in Depends)',
+                # so lets check if Depends/Recommends contains the
+                # appropriate substvar
+                if (substvar not in paragraph.get('depends', '')
+                        and substvar not in paragraph.get('recommends', '')):
+                    log.debug('skipping package %s (missing %s in '
+                              'Depends/Recommends)',
                               binary_package, substvar)
                     continue
             # Operate on binary_package
@@ -168,6 +182,18 @@ class DebHelper:
         fp.close()
         log.debug('source=%s, binary packages=%s', self.source_name,
                   list(self.packages.keys()))
+
+    def has_acted_on_package(self, package):
+        try:
+            with open('debian/{}.debhelper.log'.format(package),
+                      encoding='utf-8') as f:
+                for line in f:
+                    if line.strip() == self.command:
+                        return True
+        except IOError as e:
+            if e.errno != errno.ENOENT:
+                raise
+        return False
 
     def addsubstvar(self, package, name, value):
         """debhelper's addsubstvar"""
@@ -286,7 +312,16 @@ class DebHelper:
                 fp.close()
                 chmod(fn, 0o755)
 
+    def save_log(self):
+        if not self.options.write_log:
+            return
+        for package, settings in self.packages.items():
+            with open('debian/{}.debhelper.log'.format(package),
+                      'a', encoding='utf-8') as f:
+                f.write(self.command + '\n')
+
     def save(self):
         self.save_substvars()
         self.save_autoscripts()
         self.save_rtupdate()
+        self.save_log()

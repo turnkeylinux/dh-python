@@ -179,6 +179,9 @@ OPTIONS
 
 -N NO_PACKAGE, --no-package=NO_PACKAGE	do not act on the specified package
 
+--remaining-packages	Do not act on the packages which have already
+  been acted on by this command earlier in the same override.
+
 -V VERSION_RANGE	specify list of supported Python 3 versions. See
   py3compile(1) for examples
 
@@ -227,9 +230,9 @@ OPTIONS
 
 SEE ALSO
 ========
-* /usr/share/doc/python/python-policy.txt.gz
+* /usr/share/doc/python3/python-policy.txt.gz
 * /usr/share/doc/dh-python/README.PyDist
 * pybuild(1)
 * py3compile(1), py3clean(1)
-* dh_python2(1), pycompile(1), pyclean(1)
+* pycompile(1), pyclean(1)
 * http://deb.li/dhp3 - most recent version of this document

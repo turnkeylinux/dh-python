@@ -22,11 +22,14 @@
 
 import logging
 import argparse
+import re
 import sys
 from os import environ, getcwd, makedirs, remove
 from os.path import abspath, exists, isdir, join
 from shutil import rmtree
+from tempfile import mkdtemp
 
+INTERP_VERSION_RE = re.compile(r'^python(?P<version>3\.\d+)(?P<dbg>-dbg)?$')
 logging.basicConfig(format='%(levelname).1s: pybuild '
                            '%(module)s:%(lineno)d: %(message)s')
 log = logging.getLogger('dhpython')
@@ -133,8 +136,9 @@ def main(cfg):
         tpls = {i for i in plugin.SUPPORTED_INTERPRETERS if '{version}' in i}
         if tpls:
             for ipreter in cfg.interpreter:
-                if ipreter[6:9].replace('.', '').isdigit():
-                    ver = ipreter[6:9]
+                m = INTERP_VERSION_RE.match(ipreter)
+                if m:
+                    ver = m.group('version')
                     updated = set(tpl.format(version=ver) for tpl in tpls)
                     updated and plugin.SUPPORTED_INTERPRETERS.update(updated)
 
@@ -153,11 +157,10 @@ def main(cfg):
     if not versions:
         if len(cfg.interpreter) == 1:
             i = cfg.interpreter[0]
-            if len(i[6:9]) == 3 and i[6:9].replace('.', '').isdigit():
-                # NOTE: python3[6:9] == '3' and we don't want it here,
-                #       ipreter[-3:] doesn't cover pythonX.Y-dbg
+            m = INTERP_VERSION_RE.match(i)
+            if m:
                 log.debug('defaulting to version hardcoded in interpreter name')
-                versions = [i[6:9]]
+                versions = [m.group('version')]
             else:
                 IMAP = {v: k for k, v in PKG_PREFIX_MAP.items()}
                 if i in IMAP:
@@ -200,7 +203,13 @@ def main(cfg):
             home_dir.append('dbg')
         if cfg.name:
             home_dir.append(cfg.name)
-        home_dir = '.pybuild/{}'.format('_'.join(home_dir))
+        if cfg.autopkgtest_only:
+            base_dir = environ.get('AUTOPKGTEST_TMP')
+            if not base_dir:
+                base_dir = mkdtemp(prefix='pybuild-autopkgtest-')
+        else:
+            base_dir = '.pybuild/{}'
+        home_dir = base_dir.format('_'.join(home_dir))
 
         build_dir = get_option('build_dir', interpreter, version,
                                default=join(home_dir, 'build'))
@@ -234,8 +243,8 @@ def main(cfg):
         env = dict(args.get('ENV', {}))
         pp = env.get('PYTHONPATH', context['ENV'].get('PYTHONPATH'))
         pp = pp.split(':') if pp else []
-        if step in {'build', 'test'}:
-            if step == 'test':
+        if step in {'build', 'test', 'autopkgtest'}:
+            if step in {'test', 'autopkgtest'}:
                 args['test_dir'] = join(args['destdir'], args['install_dir'].lstrip('/'))
                 if args['test_dir'] not in pp:
                     pp.append(args['test_dir'])
@@ -328,6 +337,16 @@ def main(cfg):
                 raise Exception(msg)
         return result
 
+    def move_to_ext_destdir(i, version, context):
+        """Move built C extensions from the general destdir to ext_destdir"""
+        args = get_args(context, 'install', version, interpreter)
+        ext_destdir = get_option('ext_destdir', i, version)
+        if ext_destdir:
+            move_matching_files(args['destdir'], ext_destdir,
+                                get_option('ext_pattern', i, version),
+                                get_option('ext_sub_pattern', i, version),
+                                get_option('ext_sub_repl', i, version))
+
     func = None
     if cfg.clean_only:
         func = plugin.clean
@@ -338,6 +357,8 @@ def main(cfg):
     elif cfg.install_only:
         func = plugin.install
     elif cfg.test_only:
+        func = plugin.test
+    elif cfg.autopkgtest_only:
         func = plugin.test
     elif cfg.print_args:
         func = plugin.print_args
@@ -369,15 +390,10 @@ def main(cfg):
                     # try to build/test other interpreters/versions even if
                     # one of them fails to make build logs more verbose:
                     failure = True
-                    if step not in ('build', 'test'):
+                    if step not in ('build', 'test', 'autopkgtest'):
                         exit(13)
                 if step == 'install':
-                    ext_destdir = get_option('ext_destdir', i, version)
-                    if ext_destdir:
-                        move_matching_files(c['destdir'], ext_destdir,
-                                            get_option('ext_pattern', i, version),
-                                            get_option('ext_sub_pattern', i, version),
-                                            get_option('ext_sub_repl', i, version))
+                    move_to_ext_destdir(i, version, c)
         if failure:
             # exit with a non-zero return code if at least one build/test failed
             exit(13)
@@ -411,12 +427,7 @@ def main(cfg):
                     run(plugin.build, i, version, c)
                 if not is_disabled('install', i, version):
                     run(plugin.install, i, version, c)
-                    ext_destdir = get_option('ext_destdir', i, version)
-                    if ext_destdir:
-                        move_matching_files(c['destdir'], ext_destdir,
-                                            get_option('ext_pattern', i, version),
-                                            get_option('ext_sub_pattern', i, version),
-                                            get_option('ext_sub_repl', i, version))
+                    move_to_ext_destdir(i, version, c)
                 if not nocheck and not is_disabled('test', i, version):
                     run(plugin.test, i, version, c)
     except Exception as err:
@@ -456,6 +467,8 @@ def parse_args(argv):
                         help='invoke install step for all requested Python versions')
     action.add_argument('--test', action='store_true', dest='test_only',
                         help='invoke tests for auto-detected build system')
+    action.add_argument('--autopkgtest', action='store_true', dest='autopkgtest_only',
+                        help='invoke autopkgtests for auto-detected build system')
     action.add_argument('--list-systems', action='store_true',
                         help='list available build systems and exit')
     action.add_argument('--print', action='append', dest='print_args',
@@ -508,6 +521,9 @@ def parse_args(argv):
     tests.add_argument('--test-tox', action='store_true',
                        default=environ.get('PYBUILD_TEST_TOX') == '1',
                        help='use tox in --test step')
+    tests.add_argument('--test-custom', action='store_true',
+                       default=environ.get('PYBUILD_TEST_CUSTOM') == '1',
+                       help='use custom command in --test step')
 
     dirs = parser.add_argument_group('DIRECTORIES')
     dirs.add_argument('-d', '--dir', action='store', metavar='DIR',
@@ -562,7 +578,7 @@ def parse_args(argv):
         args.versions = versions
 
     if args.test_nose or args.test_nose2 or args.test_pytest or args.test_tox\
-       or args.system == 'custom':
+       or args.test_custom or args.system == 'custom':
         args.custom_tests = True
     else:
         args.custom_tests = False

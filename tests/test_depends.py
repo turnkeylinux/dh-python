@@ -257,6 +257,9 @@ class TestEnvironmentMarkersDistInfo(DependenciesTestCase):
         'python_version_full_lt351': 'python3-python-version-full-lt351',
         'python_version_full_le351': 'python3-python-version-full-le351',
         'python_version_full_ge351': 'python3-python-version-full-ge351',
+        'python_version_full_ge351a1': 'python3-python-version-full-ge351a1',
+        'python_version_full_ge351b1post1':
+            'python3-python-version-full-ge351b1post1',
         'python_version_full_gt351': 'python3-python-version-full-gt351',
         'python_version_full_eq351': 'python3-python-version-full-eq351',
         'python_version_full_ne351': 'python3-python-version-full-ne351',
@@ -320,6 +323,10 @@ class TestEnvironmentMarkersDistInfo(DependenciesTestCase):
                 "python_full_version > '3.5.1'",
             "Requires-Dist: python_version_full_ge351; "
                 "python_full_version >= '3.5.1'",
+            "Requires-Dist: python_version_full_ge351a1; "
+                "python_full_version >= '3.5.1a1'",
+            "Requires-Dist: python_version_full_ge351b1post1; "
+                "python_full_version >= '3.5.1b1.post1'",
             "Requires-Dist: python_version_full_eq351; "
                 "python_full_version == '3.5.1'",
             "Requires-Dist: python_version_full_ne351; "
@@ -468,6 +475,18 @@ class TestEnvironmentMarkersDistInfo(DependenciesTestCase):
         self.assertIn('python3-python-version-full-ge351 | python3 (<< 3.5.1)',
                       self.d.depends)
 
+    def test_depends_on_py_version_full_ge_351a1_packages(self):
+        # With full PEP-440 parsing this should be (<< 3.5.1~a1)
+        self.assertIn(
+            'python3-python-version-full-ge351a1 | python3 (<< 3.5.0)',
+            self.d.depends)
+
+    def test_depends_on_py_version_full_ge_351b1post1_packages(self):
+        # With full PEP-440 parsing this should be (<< 3.5.1~b1.post1)
+        self.assertIn('python3-python-version-full-ge351a1 '
+                      '| python3 (<< 3.5.0)',
+                      self.d.depends)
+
     def test_depends_on_py_version_full_gt_351_packages(self):
         self.assertIn('python3-python-version-full-gt351 | python3 (<< 3.5.2)',
                       self.d.depends)
@@ -594,6 +613,10 @@ class TestEnvironmentMarkersEggInfo(TestEnvironmentMarkersDistInfo):
             "python_version_full_gt351",
             "[:python_full_version >= '3.5.1']",
             "python_version_full_ge351",
+            "[:python_full_version >= '3.5.1a1']",
+            "python_version_full_ge351a1",
+            "[:python_full_version >= '3.5.1b1.post1']",
+            "python_version_full_ge351b1post1",
             "[:python_full_version == '3.5.1']",
             "python_version_full_eq351",
             "[:python_full_version != '3.5.1']",

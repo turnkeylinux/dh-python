@@ -1,3 +1,170 @@
+dh-python (5.20230130) unstable; urgency=medium
+
+  * pybuild.pm: Export SETUPTOOLS_SCM_PRETEND_VERSION for packages using
+    python3-hatch-vcs packages.
+  * Update pydist fallback.
+  * Handle 2-digit minor versions in X-Python3-Version parsing (stop limiting
+    the values to 3 bytes). (Closes: #1028364)
+  * Bump Standards-Version to 4.6.2, no changes needed.
+
+ -- Stefano Rivera <stefanor@debian.org>  Mon, 30 Jan 2023 12:30:45 -0400
+
+dh-python (5.20230109) unstable; urgency=medium
+
+  * ignore/strip :native suffix when searching for build dependencies in
+    pybuild.pm. Thanks Joseph Nahmias for the patch.
+
+ -- Stefano Rivera <stefanor@debian.org>  Mon, 09 Jan 2023 16:29:17 -0400
+
+dh-python (5.20221230) unstable; urgency=medium
+
+  [ Stefano Rivera ]
+  * Correct typo in nose autopkgtest.
+  * Export HOME in the pyproject plugin, as we do in the distutils one.
+  * Remove install_requires from test301, setuptools will parse this where
+    distutils historically wouldn't have.
+
+  [ Colin Watson ]
+  * Fix interaction between --test-custom and distutils plugin.
+
+  [ Antonio Terceiro ]
+  * pybuild-autopkgtest: allow autopkgtest-specific behavior in debian/rules.
+
+  [ Stefano Rivera ]
+  * pybuild-autopkgtest: Instead of using a different buildsystem for the
+    autopkgtest runner, use a different build stage. This way, packages with
+    custom buildsystems can use pybuild-autopkgtest. (Closes: #1025737)
+
+ -- Stefano Rivera <stefanor@debian.org>  Fri, 30 Dec 2022 09:47:32 -0400
+
+dh-python (5.20221205) unstable; urgency=medium
+
+  * Regenerate pydist.
+  * Include ${misc:Depends} in pybuild-plugin-autopkgtest.
+  * Run the autopkgtest nose test suite on all supported Python 3 versions.
+  * Update lintian overrides.
+  * Install data into the system data directory, as pip would.
+    (closes: 1025485)
+  * Remove a left-over Depends on pypy in the autopkgtest.
+  * pybuild plugin: Stage the scripts and data one level up in the .pybuild
+    directory (rather than have to ignore them when we install the module).
+
+ -- Stefano Rivera <stefanor@debian.org>  Mon, 05 Dec 2022 21:18:44 -0400
+
+dh-python (5.20221203) experimental; urgency=medium
+
+  * Upload to experimental, to go through binNEW.
+  * Add autopkgtest runner pybuild-autopkgtest, thanks Antonio Terceiro.
+    (closes: 1000803)
+
+ -- Stefano Rivera <stefanor@debian.org>  Fri, 02 Dec 2022 13:14:44 -0400
+
+dh-python (5.20221202) unstable; urgency=medium
+
+  * Deprecate the flit plugin in favour of pyproject.
+    - Reduce the auto-detect score of the flit plugin.
+  * dh_python3: Clean up more license files from dist-info directories.
+  * Write to debhelper.log files, in overrides.
+  * Add support for --remaining-packages to dh_python*. (closes: 1021875)
+  * Add a test that demonstrates building multiple libraries in a single
+    source package. (closes: 1018952)
+  * Remove dh_python2, dh_pypy, and related debhelper sequences, supporting
+    the removal of the Python 2.7 stack before bookworm release.
+    (closes: 942959)
+
+ -- Stefano Rivera <stefanor@debian.org>  Fri, 02 Dec 2022 13:13:51 -0400
+
+dh-python (5.20221122) unstable; urgency=medium
+
+  * Support the nodoc and nocheck build profiles.
+  * flit plugin: Avoid modifying sysconfig data, thanks Stuart Prescott.
+    (closes: 1024521)
+
+ -- Stefano Rivera <stefanor@debian.org>  Sat, 15 Oct 2022 17:53:49 +0200
+
+dh-python (5.20221008) unstable; urgency=medium
+
+  * Ignore python_*_version environment markers with versions we can't parse.
+    (closes: 1021410)
+  * Add some hacks to our python_full_version environment marker parsing to at
+    least produce a reasonable result for PEP-440 pre-releases like 1021410.
+
+ -- Stefano Rivera <stefanor@debian.org>  Sat, 08 Oct 2022 15:28:22 +0200
+
+dh-python (5.20221001) unstable; urgency=medium
+
+  * Fix -X handling in dh_python3 et al. Broken in the migration to argparse
+    in 5.20220819. (closes: 1020041)
+
+ -- Stefano Rivera <stefanor@debian.org>  Sat, 01 Oct 2022 14:31:31 +0200
+
+dh-python (5.20220924) unstable; urgency=medium
+
+  * Escape a . in a regex in tests/test-package-show-info, fixes FTBFS in
+    Ubuntu which builds with the noudeb profile.
+
+ -- Stefano Rivera <stefanor@debian.org>  Sat, 24 Sep 2022 19:17:12 +0200
+
+dh-python (5.20220923) unstable; urgency=medium
+
+  [ Stefano Rivera ]
+  * Run Python test suite with nose2. (closes: 1018338)
+  * Don't attempt to diff static libs (.a), thanks Nick Rosbrook.
+    (closes: 1020528)
+  * Bump Standards-Version to 4.6.1, no changes needed.
+
+  [ Debian Janitor ]
+  * Bump debhelper from old 12 to 13.
+    + Drop check for DEB_BUILD_OPTIONS containing "nocheck", since debhelper now
+      does this.
+  * Remove constraints unnecessary since buster (oldstable):
+    + dh-python: Drop versioned constraint on python3 in Replaces.
+
+  [ Stuart Prescott ]
+  * pyproject plugin: Make the package's entry points available in the PATH
+    when running the package's test suite, so that tests using the entry
+    points can be run.
+
+ -- Stefano Rivera <stefanor@debian.org>  Fri, 23 Sep 2022 09:47:57 +0200
+
+dh-python (5.20220819) unstable; urgency=medium
+
+  * flit plugin: Explicitly install using the "deb_system" sysconfig scheme.
+  * Update location for python-policy in dh_python3(1), thanks Andrius Merkys.
+  * autoscripts/prerm-{py3,pypy}clean: Use sed instead of perl, thanks Gioele
+    Barabucci.
+  * pybuild.pm: Handle multiple (comma-separated) versions in
+    DEBPYTHON3_SUPPORTED. (closes: 1015774)
+  * pybuild.pm: Don't entirely swallow py3versions -r errors. (closes: 827870)
+  * pybuild: Don't print stack traces when we can't initialize a plugin due to
+    a missing command, it's confusing. (closes: 954215)
+  * pybuild cmake plugin: Add support for FindPython and FindPython3,
+    available since CMake 3.12. (closes: 949377)
+  * dh_python3: Don't generate ${python3:Provides} or ${python3:Versions}.
+    Never intended for use with Python 3, by the Debian Python Policy, and not
+    currently in use. (closes: 811080, 951748)
+  * dh_python3: Operate on binary packages that only Recommends:
+    ${python3:Depends}, too. (closes: 1017001)
+  * Port dh_python2/dh_python3/dh_pypy to argparse.
+  * dh_*: Parse -O=... options provided by debhelper. (closes: 949286)
+  * pybuild: Make --ext-dest-dir work again, when --name is specified.
+    (closes: 942882)
+  * Remove the text in pybuild(1) describing pybuild-plugin-pyproject as being
+    in beta.
+
+ -- Stefano Rivera <stefanor@debian.org>  Fri, 19 Aug 2022 22:34:55 +0200
+
+dh-python (5.20220403) unstable; urgency=medium
+
+  * Refresh pydist.
+  * Replace which with command -v in autoscripts, thanks Diederik de Haas.
+  * Add support for --test-custom/PYBUILD_TEST_CUSTOM. Thanks, Antonio
+    Terceiro!
+  * Correctly handle --interpreter python3.10 (2-digit minor version).
+    (closes: 1008745)
+
+ -- Stefano Rivera <stefanor@debian.org>  Sun, 03 Apr 2022 15:45:19 -0400
+
 dh-python (5.20220215~bpo11+1) bullseye-backports; urgency=medium
 
   * Rebuild for bullseye-backports.

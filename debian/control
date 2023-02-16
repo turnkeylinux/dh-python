@@ -3,14 +3,16 @@ Section: python
 Priority: optional
 Maintainer: Piotr Ożarowski <piotr@debian.org>
 Uploaders: Stefano Rivera <stefanor@debian.org>
-Build-Depends: debhelper-compat (= 12),
- python3-minimal, libpython3-stdlib, libdpkg-perl,
-# provides rst2man command (use python-docutils to avoid circular deps):
- python3-docutils,
-# used by tests:
- python3-all, python3-all-dbg, python3-all-dev,
- python3-nose
-Standards-Version: 4.6.0
+Build-Depends: debhelper-compat (= 13),
+ libdpkg-perl,
+ libpython3-stdlib,
+ python3-all <!nocheck>,
+ python3-all-dbg <!nocheck>,
+ python3-all-dev <!nocheck>,
+ python3-docutils <!nodoc>,
+ python3-minimal,
+ python3-nose2 <!nocheck>,
+Standards-Version: 4.6.2
 Vcs-Git: https://salsa.debian.org/python-team/tools/dh-python.git
 Vcs-Browser: https://salsa.debian.org/python-team/tools/dh-python
 Rules-Requires-Root: no
@@ -22,26 +24,16 @@ Depends: ${misc:Depends}, ${python3:Depends},
 # depend on distutils to avoid adding it to Build-Depends in other packages
  python3-distutils | python3 (<< 3.6.5~rc1-1)
 Provides:
- dh-sequence-pypy,
- dh-sequence-python2,
  dh-sequence-python3,
 Suggests: libdpkg-perl, dpkg-dev, flit, python3-build, python3-tomli, python3-installer
 Breaks:
 # due to /usr/bin/dh_python3 and debhelper files
  python3 (<< 3.3.2-4~),
-# due to /usr/bin/dh_python2 and debhelper files
- python (<< 2.7.18-2),
- python2 (<< 2.7.18-2)
-Replaces: python3 (<< 3.3.2-4~), python (<< 2.7.18-2), python2 (<< 2.7.18-2)
 Description: Debian helper tools for packaging Python libraries and applications
  This package contains:
   * pybuild - invokes various build systems for requested Python versions in
     order to build modules and extensions
-  * dh_python2 - calculates Python 2.X dependencies for Debian packages,
-    adds maintainer scripts to byte compile files, etc.
   * dh_python3 - calculates Python 3.X dependencies for Debian packages,
-    adds maintainer scripts to byte compile files, etc.
-  * dh_pypy - calculates PyPy dependencies for Debian packages,
     adds maintainer scripts to byte compile files, etc.
 
 Package: pybuild-plugin-pyproject
@@ -56,3 +48,17 @@ Depends:
 Description: Debian helper tools for packaging Python libraries using PEP517
  This metapackage depends on the components necessary for building packages
  with the generic PEP517 build plugin.
+
+Package: pybuild-plugin-autopkgtest
+Architecture: all
+Multi-Arch: foreign
+Depends:
+ dh-python (= ${source:Version}),
+ debhelper,
+ make,
+ ${misc:Depends}
+Description: pybuild autopkgtest test runner (metapackage)
+ This package depends on the packages required to run pybuild-autopkgtest, a
+ pybuild-based autopkgtest test runner. pybuild-autopkgtest will run the same
+ test suite that regular pybuild runs during build time, but against the
+ installed packages and without doing a build first.

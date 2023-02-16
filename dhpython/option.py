@@ -20,28 +20,11 @@
 # THE SOFTWARE.
 
 import re
-import optparse
-from copy import copy
-from dhpython.version import VersionRange
 
 
-def parse_version_range(option, opt, value):
+def compiled_regex(string):
+    """argparse regex type"""
     try:
-        return VersionRange(value)
-    except ValueError:
-        raise optparse.OptionValueError("version range is invalid: %s" % value)
-
-
-def compile_regexpr(option, opt, value):
-    try:
-        pattern = re.compile(value)
-    except Exception:
-        raise optparse.OptionValueError('regular expression is not valid')
-    return pattern
-
-
-class Option(optparse.Option):
-    TYPES = optparse.Option.TYPES + ('version_range', 'regexpr')
-    TYPE_CHECKER = copy(optparse.Option.TYPE_CHECKER)
-    TYPE_CHECKER['version_range'] = parse_version_range
-    TYPE_CHECKER['regexpr'] = compile_regexpr
+        return re.compile(string)
+    except re.error:
+        raise ValueError("regular expression is not valid")

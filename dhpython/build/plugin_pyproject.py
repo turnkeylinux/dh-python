@@ -106,7 +106,8 @@ class BuildSystem(Base):
         """ build a wheel using the PEP517 builder defined by upstream """
         log.info('Building wheel for %s with "build" module',
                  args['interpreter'])
-        args['ENV']['FLIT_NO_NETWORK'] = '1'
+        context['ENV']['FLIT_NO_NETWORK'] = '1'
+        context['ENV']['HOME'] = args['home_dir']
         return ('{interpreter} -m build '
                 '--skip-dependency-check --no-isolation --wheel '
                 '--outdir ' + args['home_dir'] +
@@ -117,19 +118,21 @@ class BuildSystem(Base):
         """ unpack the wheel into pybuild's normal  """
         log.info('Unpacking wheel built for %s with "installer" module',
                  args['interpreter'])
-        # FIXME: setuptools would use scripts-X.Y; this could use usr/bin?
-        scripts = f'{args["build_dir"]}/scripts-{args["interpreter"].version}'
-        if osp.exists(scripts):
-            log.warning('Scripts directory already exists, skipping unpack. '
-                        'Is the Python package being built twice?')
-            return
+        extras = {}
+        for extra in ('scripts', 'data'):
+            path = Path(args["home_dir"]) / extra
+            if osp.exists(path):
+                log.warning(f'{extra.title()} directory already exists, '
+                            'skipping unpack. '
+                            'Is the Python package being built twice?')
+                return
+            extras[extra] = path
         destination = SchemeDictionaryDestination(
             {
                 'platlib': args['build_dir'],
                 'purelib': args['build_dir'],
-                'scripts': scripts,
-                 #FIXME is this the right dest for data?
-                'data': args['build_dir']
+                'scripts': extras['scripts'],
+                'data': extras['data'],
             },
             interpreter=args['interpreter'].binary_dv,
             script_kind='posix',
@@ -164,13 +167,16 @@ class BuildSystem(Base):
             # TODO: Introduce a version check once sysconfig is patched.
             paths = sysconfig.get_paths(scheme='posix_prefix')
 
-        # start by copying the scripts
-        for script_dir in Path(args['build_dir']).glob('scripts-*'):
-            target_dir = args['destdir'] + paths['scripts']
-            log.debug('Copying scripts directory contents from %s -> %s',
-                      script_dir, target_dir)
+        # start by copying the data and scripts
+        for extra in ('data', 'scripts'):
+            src_dir = Path(args['home_dir']) / extra
+            if not src_dir.exists():
+                continue
+            target_dir = args['destdir'] + paths[extra]
+            log.debug('Copying %s directory contents from %s -> %s',
+                      extra, src_dir, target_dir)
             shutil.copytree(
-                script_dir,
+                src_dir,
                 target_dir,
                 dirs_exist_ok=True,
             )
@@ -183,10 +189,13 @@ class BuildSystem(Base):
         shutil.copytree(
             module_dir,
             target_dir,
-            ignore=shutil.ignore_patterns('scripts-*'),
             dirs_exist_ok=True,
         )
 
     @shell_command
     def test(self, context, args):
+        scripts = Path(args["home_dir"]) / 'scripts'
+        if scripts.exists():
+            context['ENV']['PATH'] = f"{scripts}:{context['ENV']['PATH']}"
+        context['ENV']['HOME'] = args['home_dir']
         return super().test(context, args)

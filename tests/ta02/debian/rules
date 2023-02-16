@@ -1,0 +1,28 @@
+#!/usr/bin/make -f
+
+export PYBUILD_NAME=foo
+export PYBUILD_TEST_CUSTOM=1
+export PYBUILD_TEST_ARGS=touch {dir}/custom-test-executed
+
+%:
+	dh $@
+
+override_dh_auto_build:
+	../../pybuild --build --verbose
+
+override_dh_auto_install:
+	../../pybuild --install
+
+override_dh_auto_test:
+	../../pybuild --test
+
+override_dh_auto_clean:
+	../../pybuild --clean --verbose
+	rm -rf custom-test-executed foo.egg-info
+
+override_dh_installinit:
+	DH_VERBOSE=1 ../../dh_python3
+	dh_installinit
+
+override_dh_python3:
+	# ignore any system dh_python3

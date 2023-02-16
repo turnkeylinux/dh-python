@@ -98,11 +98,12 @@ def share_files(srcdir, dstdir, interpreter, options):
                 fpath1 = Scan.rename_ext(fpath1, interpreter, version)
                 i = split(fpath1)[-1]
         if srcdir.endswith(".dist-info"):
-            if i == 'LICENSE' or i.startswith('LICENSE.'):
+            if i in ('COPYING', 'LICENSE') or i.startswith(
+                    ('COPYING.', 'LICENSE.')):
                 os.remove(fpath1)
                 cleanup_actions.append((remove_from_RECORD, ([i],)))
                 continue
-            elif isdir(fpath1) and i == 'license_files':
+            elif isdir(fpath1) and i in ('licenses', 'license_files'):
                 cleanup_actions.append((
                     remove_from_RECORD,
                     ([
@@ -144,7 +145,7 @@ def share_files(srcdir, dstdir, interpreter, options):
         else:
             # The files differed so we cannot collapse them.
             log.warn('Paths differ: %s and %s', fpath1, fpath2)
-            if options.verbose and not i.endswith('.so'):
+            if options.verbose and not i.endswith(('.so', '.a')):
                 with open(fpath1) as fp1:
                     fromlines = fp1.readlines()
                 with open(fpath2) as fp2:

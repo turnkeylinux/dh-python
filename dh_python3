@@ -23,9 +23,8 @@
 
 import logging
 import os
-import re
 import sys
-from optparse import OptionParser, SUPPRESS_HELP
+from argparse import ArgumentParser, SUPPRESS
 from os.path import exists, join
 from shutil import copy as fcopy
 from dhpython.debhelper import DebHelper
@@ -34,7 +33,7 @@ from dhpython.interpreter import Interpreter, EXTFILE_RE
 from dhpython.version import supported, default, Version, VersionRange
 from dhpython.pydist import validate as validate_pydist
 from dhpython.fs import fix_locations, Scan
-from dhpython.option import Option
+from dhpython.option import compiled_regex
 from dhpython.tools import pyinstall, pyremove
 
 # initialize script
@@ -62,93 +61,112 @@ class Scanner(Scan):
 
 
 def main():
-    usage = '%prog -p PACKAGE [-V [X.Y][-][A.B]] DIR [-X REGEXPR]\n'
-    parser = OptionParser(usage, version='%prog DEVELV', option_class=Option)
-    parser.add_option('--no-guessing-deps', action='store_false',
-                      dest='guess_deps', default=True,
-                      help='disable guessing dependencies')
-    parser.add_option('--skip-private', action='store_true', default=False,
-                      help='don\'t check private directories')
-    parser.add_option('-v', '--verbose', action='store_true', default=False,
-                      help='turn verbose mode on')
+    parser = ArgumentParser()
+    parser.add_argument(
+        '--version', action='version', version='%(prog)s DEVELV')
+    parser.add_argument(
+        '--no-guessing-deps', action='store_false', dest='guess_deps',
+        help='disable guessing dependencies')
+    parser.add_argument(
+        '--skip-private', action='store_true',
+        help="don't check private directories")
+    parser.add_argument(
+        '-v', '--verbose', action='store_true',
+        default=os.environ.get('DH_VERBOSE') == '1',
+        help='turn verbose mode on')
     # arch=False->arch:all only, arch=True->arch:any only, None->all of them
-    parser.add_option('-i', '--indep', action='store_false',
-                      dest='arch', default=None,
-                      help='act on architecture independent packages')
-    parser.add_option('-a', '-s', '--arch', action='store_true',
-                      dest='arch', help='act on architecture dependent packages')
-    parser.add_option('-q', '--quiet', action='store_false', dest='verbose',
-                      help='be quiet')
-    parser.add_option('-p', '--package', action='append',
-                      help='act on the package named PACKAGE')
-    parser.add_option('-N', '--no-package', action='append',
-                      help='do not act on the specified package')
-    parser.add_option('--compile-all', action='store_true', default=False,
-                      help='compile all files from given private directory '
-                           'in postinst, not just the ones provided by the '
-                           'package')
-    parser.add_option('-V', type='version_range', dest='vrange',
-                      help='specify list of supported Python versions. ' +
-                           'See py3compile(1) for examples')
-    parser.add_option('-X', '--exclude', action='append', dest='regexpr',
-                      help='exclude items that match given REGEXPR. You may '
-                           'use this option multiple times to build up a list'
-                           ' of things to exclude.')
-    parser.add_option('--accept-upstream-versions', action='store_true',
-                      default=False, help='accept upstream versions while '
-                      'translating Python dependencies into Debian ones')
-    parser.add_option('--depends', action='append',
-                      help='translate given requirements into Debian '
-                           'dependencies and add them to ${python3:Depends}. '
-                           'Use it for missing items in requires.txt.')
-    parser.add_option('--depends-section', action='append',
-                      help='translate requirements from given section into Debian '
-                           'dependencies and add them to ${python3:Depends}')
-    parser.add_option('--recommends', action='append',
-                      help='translate given requirements into Debian '
-                           'dependencies and add them to ${python3:Recommends}')
-    parser.add_option('--recommends-section', action='append',
-                      help='translate requirements from given section into Debian '
-                           'dependencies and add them to ${python3:Recommends}')
-    parser.add_option('--suggests', action='append',
-                      help='translate given requirements into Debian '
-                           'dependencies and add them to ${python3:Suggests}')
-    parser.add_option('--suggests-section', action='append',
-                      help='translate requirements from given section into Debian '
-                           'dependencies and add them to ${python3:Suggests}')
-    parser.add_option('--requires', action='append',
-                      help='translate requirements from given file into Debian '
-                           'dependencies and add them to ${python3:Depends}')
-    parser.add_option('--shebang',
-                      help='use given command as shebang in scripts')
-    parser.add_option('--ignore-shebangs', action='store_true', default=False,
-                      help='do not translate shebangs into Debian dependencies')
-    parser.add_option('--no-dbg-cleaning', action='store_false',
-                      dest='clean_dbg_pkg', default=True,
-                      help='do not remove files from debug packages')
-    parser.add_option('--no-ext-rename', action='store_true',
-                      default=False, help='do not add magic tags nor multiarch'
-                                          ' tuples to extension file names)')
-    parser.add_option('--no-shebang-rewrite', action='store_true',
-                      default=False, help='do not rewrite shebangs')
-    # ignore some debhelper options:
-    parser.add_option('-O', help=SUPPRESS_HELP)
+    parser.add_argument(
+        '-i', '--indep', action='store_false', dest='arch', default=None,
+        help='act on architecture independent packages')
+    parser.add_argument(
+        '-a', '-s', '--arch', action='store_true', dest='arch',
+        help='act on architecture dependent packages')
+    parser.add_argument(
+        '-q', '--quiet', action='store_false', dest='verbose', help='be quiet')
+    parser.add_argument(
+        '-p', '--package', action='append', metavar='PACKAGE',
+        help='act on the package named PACKAGE')
+    parser.add_argument(
+        '-N', '--no-package', action='append', metavar='PACKAGE',
+        help='do not act on the specified package')
+    parser.add_argument(
+        '--remaining-packages', action='store_true',
+        help='Do not act on the packages which have already been acted on by '
+             'this debhelper command earlier')
+    parser.add_argument(
+        '--compile-all', action='store_true',
+        help='compile all files from given private directory in postinst, not '
+             'just the ones provided by the package')
+    parser.add_argument(
+        '-V', type=VersionRange, dest='vrange', metavar='[X.Y][-][A.B]',
+        help='specify list of supported Python versions. See py3compile(1) for '
+             'examples')
+    parser.add_argument(
+        '-X', '--exclude', action='append', dest='regexpr', type=compiled_regex,
+        metavar='REGEXPR',
+        help='exclude items that match given REGEXPR. You may use this option '
+             'multiple times to build up a list of things to exclude.')
+    parser.add_argument(
+        '--accept-upstream-versions', action='store_true',
+        help='accept upstream versions while translating Python dependencies '
+             'into Debian ones')
+    parser.add_argument(
+        '--depends', action='append', metavar='REQ',
+        help='translate given requirements into Debian dependencies and add '
+             'them to ${python3:Depends}. Use it for missing items in '
+             'requires.txt.')
+    parser.add_argument(
+        '--depends-section', action='append', metavar='SECTION',
+        help='translate requirements from given section into Debian '
+             'dependencies and add them to ${python3:Depends}')
+    parser.add_argument(
+        '--recommends', action='append', metavar='REQ',
+        help='translate given requirements into Debian dependencies and add '
+             'them to ${python3:Recommends}')
+    parser.add_argument(
+        '--recommends-section', action='append', metavar='SECTION',
+        help='translate requirements from given section into Debian '
+             'dependencies and add them to ${python3:Recommends}')
+    parser.add_argument(
+        '--suggests', action='append', metavar='REQ',
+        help='translate given requirements into Debian dependencies and add '
+             'them to ${python3:Suggests}')
+    parser.add_argument(
+        '--suggests-section', action='append', metavar='SECTION',
+        help='translate requirements from given section into Debian '
+             'dependencies and add them to ${python3:Suggests}')
+    parser.add_argument(
+        '--requires', action='append', metavar='FILE',
+        help='translate requirements from given file into Debian dependencies '
+             'and add them to ${python3:Depends}')
+    parser.add_argument(
+        '--shebang', metavar='COMMAND',
+        help='use given command as shebang in scripts')
+    parser.add_argument(
+        '--ignore-shebangs', action='store_true',
+        help='do not translate shebangs into Debian dependencies')
+    parser.add_argument(
+        '--no-dbg-cleaning', action='store_false', dest='clean_dbg_pkg',
+        help='do not remove files from debug packages')
+    parser.add_argument(
+        '--no-ext-rename', action='store_true',
+        help='do not add magic tags nor multiarch tuples to extension file '
+             'names)')
+    parser.add_argument(
+        '--no-shebang-rewrite', action='store_true',
+        help='do not rewrite shebangs')
+    parser.add_argument('private_dir', nargs='?',
+        help='Private directory containing Python modules (optional)')
+    # debhelper options:
+    parser.add_argument('-O', action='append', help=SUPPRESS)
 
-    options, args = parser.parse_args(os.environ.get('DH_OPTIONS', '').split()
-                                      + sys.argv[1:])
-    # regexpr option type is not used so lets check patterns here
-    for pattern in options.regexpr or []:
-        # fail now rather than at runtime
-        try:
-            pattern = re.compile(pattern)
-        except Exception:
-            log.error('regular expression is not valid: %s', pattern)
-            exit(1)
+    options = parser.parse_args(os.environ.get('DH_OPTIONS', '').split()
+                                + sys.argv[1:])
+    if options.O:
+        parser.parse_known_args(options.O, options)
 
-    if not args:
-        private_dir = None
-    else:
-        private_dir = args[0]
+    private_dir = options.private_dir
+    if private_dir:
         if not private_dir.startswith('/'):
             # handle usr/share/foo dirs (without leading slash)
             private_dir = '/' + private_dir
@@ -156,16 +174,19 @@ def main():
     if options.skip_private:
         private_dir = False
 
-    if options.verbose or os.environ.get('DH_VERBOSE') == '1':
+    if options.verbose:
         log.setLevel(logging.DEBUG)
         log.debug('version: DEVELV')
         log.debug('argv: %s', sys.argv)
         log.debug('options: %s', options)
-        log.debug('args: %s', args)
         log.debug('supported Python versions: %s (default=%s)',
                   ','.join(str(v) for v in SUPPORTED), DEFAULT)
     else:
         log.setLevel(logging.INFO)
+
+    options.write_log = False
+    if os.environ.get('DH_INTERNAL_OVERRIDE', ''):
+        options.write_log = True
 
     try:
         dh = DebHelper(options, impl='cpython3')
@@ -199,15 +220,6 @@ def main():
 
         dependencies = Dependencies(package, 'cpython3', dh.build_depends)
         dependencies.parse(stats, options)
-
-        if stats['ext_vers']:
-            dh.addsubstvar(package, 'python3:Versions',
-                           ', '.join(str(v) for v in sorted(stats['ext_vers'])))
-            ps = package.split('-', 1)
-            if len(ps) > 1 and ps[0] == 'python3':
-                dh.addsubstvar(package, 'python3:Provides',
-                               ', '.join("python%s-%s" % (i, ps[1])
-                               for i in sorted(stats['ext_vers'])))
 
         pyclean_added = False  # invoke pyclean only once in maintainer script
         if stats['compile']:
@@ -250,8 +262,8 @@ def main():
                 vr = VersionRange(minver=extensions[0], maxver=extensions[-1])
                 args += " -V %s" % vr
 
-            for pattern in options.regexpr or []:
-                args += " -X '%s'" % pattern.replace("'", r"'\''")
+            for regex in options.regexpr or []:
+                args += " -X '%s'" % regex.pattern.replace("'", r"'\''")
 
             dh.autoscript(package, 'postinst', 'postinst-py3compile', args)
 

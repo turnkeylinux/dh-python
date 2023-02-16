@@ -57,6 +57,11 @@ CONTROL = [
     'Depends: ${python3:Depends}',
     '',
     '',
+    'Package: recfoo',
+    'Architecture: all',
+    'Recommends: ${python3:Depends}',
+    '',
+    '',
 ]
 
 class TestControlBlockParsing(DebHelperTestCase):
@@ -78,7 +83,7 @@ class TestControlBlockParsing(DebHelperTestCase):
 
     def test_parses_packages(self):
         self.assertEqual(list(self.dh.packages.keys()),
-                         ['python3-foo', 'python3-foo-ext', 'foo'])
+                         ['python3-foo', 'python3-foo-ext', 'foo', 'recfoo'])
 
     def test_parses_arch(self):
         self.assertEqual(self.dh.packages['python3-foo-ext']['arch'], 'any')
@@ -104,7 +109,8 @@ class TestControlSkipArch(DebHelperTestCase):
     }
 
     def test_skip_arch(self):
-        self.assertEqual(list(self.dh.packages.keys()), ['python3-foo', 'foo'])
+        self.assertEqual(list(self.dh.packages.keys()),
+                         ['python3-foo', 'foo', 'recfoo'])
 
 
 class TestControlSinglePkg(DebHelperTestCase):
@@ -125,7 +131,7 @@ class TestControlSkipSinglePkg(DebHelperTestCase):
 
     def test_parses_packages(self):
         self.assertEqual(list(self.dh.packages.keys()),
-                         ['python3-foo-ext', 'foo'])
+                         ['python3-foo-ext', 'foo', 'recfoo'])
 
 
 class TestControlBlockParsingPy2(DebHelperTestCase):
@@ -164,3 +170,23 @@ class TestControlMissingPackage(DebHelperTestCase):
                'field')
         with self.assertRaisesRegex(Exception, msg):
             DebHelper(self.build_options())
+
+
+class TestRemainingPackages(DebHelperTestCase):
+    control = CONTROL
+    options = {
+        'remaining_packages': True,
+    }
+    parse_control = False
+
+    def setUp(self):
+        super().setUp()
+        with open('debian/python3-foo.debhelper.log', 'w') as f:
+            f.write('dh_python3\n')
+        with open('debian/python3-foo-ext.debhelper.log', 'w') as f:
+            f.write('dh_foobar\n')
+        self.dh = DebHelper(self.build_options(), impl=self.impl)
+
+    def test_skips_logged_packages(self):
+        self.assertEqual(list(self.dh.packages.keys()),
+                         ['python3-foo-ext', 'foo', 'recfoo'])

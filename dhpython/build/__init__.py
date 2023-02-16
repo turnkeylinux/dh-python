@@ -22,6 +22,8 @@ import logging
 from glob import glob1
 from os.path import dirname
 
+from dhpython.exceptions import RequiredCommandMissingException
+
 log = logging.getLogger('dhpython')
 
 plugins = {}
@@ -31,6 +33,8 @@ for i in sorted(i[7:-3] for i in glob1(dirname(__file__), 'plugin_*.py')):
         module.BuildSystem.NAME = i
         module.BuildSystem.is_usable()
         plugins[i] = module.BuildSystem
+    except RequiredCommandMissingException as err:
+        log.debug("cannot initialize '%s' plugin: Missing command '%s'", i, err)
     except Exception as err:
         if log.level < logging.INFO:
             log.debug("cannot initialize '%s' plugin", i, exc_info=True)

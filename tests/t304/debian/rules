@@ -7,9 +7,20 @@ override_dh_auto_install:
 
 override_dh_install:
 	dh_install
-	DH_VERBOSE=1 ../../dh_python3
-	DH_VERBOSE=1 ../../dh_python3 /usr/share/bar
-	DH_VERBOSE=1 ../../dh_python3 /usr/share/baz32 --shebang '/usr/bin/python3.2 -OO'
+	DH_VERBOSE=1 ../../dh_python3 -p foo
+	DH_VERBOSE=1 ../../dh_python3 -p foo /usr/share/bar -X spam.py
+	DH_VERBOSE=1 ../../dh_python3 -p foo /usr/share/baz32 --shebang '/usr/bin/python3.2 -OO'
+
+	# Argument priority: -O > regular args > DH_OPTIONS
+	DH_VERBOSE=1 DH_OPTIONS=--shebang=/usr/bin/python3.0 \
+		../../dh_python3 -p overrides \
+		--shebang=/usr/bin/python3-dbg \
+		/usr/share/overrides1
+	DH_VERBOSE=1 ../../dh_python3 -p overrides \
+		--shebang=/usr/bin/python3.0 \
+		-O=--shebang=/usr/bin/python3-dbg \
+		-O=--foo=bar \
+		/usr/share/overrides2
 
 clean:
 	dh_clean

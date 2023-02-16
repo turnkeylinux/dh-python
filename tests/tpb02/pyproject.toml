@@ -14,3 +14,9 @@ requires = [
 test = [
     "tox",
 ]
+
+[tool.flit.scripts]
+foo = "foo:main"
+
+[tool.flit.external-data]
+directory = "data"

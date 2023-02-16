@@ -1,0 +1,16 @@
+#!/bin/sh
+
+set -ue
+
+changes=$1
+testname=$(basename $PWD)
+basedir=$(dirname $changes)
+
+echo "--------------------------------------------------"
+echo "Test $testname has created the following packages:"
+for deb in $(sed -nr 's/.* ([^ ]*\.deb)$/\1/p' $changes | sort -u); do
+    echo "--------------------------------------------------"
+    echo "PACKAGE $deb:"
+    dpkg-deb --info "$basedir/$deb"
+done
+echo "--------------------------------------------------"

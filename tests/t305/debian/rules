@@ -13,7 +13,10 @@ override_dh_auto_install:
 
 override_dh_install:
 	dh_install
-	DH_VERBOSE=1 ../../dh_python3 /usr/share/foo
+	DH_VERBOSE=1 ../../dh_python3 -p foo5a /usr/share/foo
+	DH_VERBOSE=1 ../../dh_python3 --remaining-packages /usr/share/foo
+	cp debian/foo5a.debhelper.log debian/foo5a.debhelper.log.end_dh_install
 
 clean:
+	rm -f debian/foo5a.debhelper.log.end_dh_install
 	dh_clean

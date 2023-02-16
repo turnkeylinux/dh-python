@@ -224,8 +224,8 @@ class Dependencies:
                         if vrange.maxver:  # maximum version specified
                             self.depend("%s (<< %s)" % (tpl_ma, vrange.maxver + 1))
 
-                for pattern in options.regexpr or []:
-                    args += " -X '%s'" % pattern.replace("'", r"'\''")
+                for regex in options.regexpr or []:
+                    args += " -X '%s'" % regex.pattern.replace("'", r"'\''")
                 self.rtscript((private_dir, args))
 
         section_options = {

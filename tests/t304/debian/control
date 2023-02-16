@@ -11,3 +11,9 @@ Architecture: all
 Depends: ${python3:Depends}, ${misc:Depends}
 Description: example 4 - shebangs
  example package #4 - shebang related tests
+
+Package: overrides
+Architecture: all
+Depends: ${python3:Depends}, ${misc:Depends}
+Description: example 4 - command line parsing
+ example package #4 - command line argument parsing
