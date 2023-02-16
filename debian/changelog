@@ -1,3 +1,9 @@
+dh-python (5.20230130~bpo11+1) bullseye-backports; urgency=medium
+
+  * Rebuild for bullseye-backports.
+
+ -- Stefano Rivera <stefanor@debian.org>  Thu, 16 Feb 2023 12:59:11 -0400
+
 dh-python (5.20230130) unstable; urgency=medium
 
   * pybuild.pm: Export SETUPTOOLS_SCM_PRETEND_VERSION for packages using
