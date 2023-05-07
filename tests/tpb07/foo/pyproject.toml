@@ -1,3 +1,12 @@
 [build-system]
 requires = ["setuptools", "wheel"]
 build-backend = "setuptools.build_meta"
+
+[tool.tox]
+legacy_tox_ini = '''
+[tox]
+envlist = py39
+
+[testenv]
+commands = {envpython} -c 'import foo; open("tests-executed-foo", "w")'
+'''

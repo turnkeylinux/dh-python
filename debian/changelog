@@ -2,6 +2,8 @@ dh-python (5.20230131) UNRELEASED; urgency=medium
 
   * Add support for PEP440 standards-markers in PyDist files (which superseded
     PEP386 almost a decade ago).
+  * Add support for tox 4. Avoid needing to do an isolated build of the
+    package by using the wheel we built, ourselves. (Closes: #1035675)
 
  -- Stefano Rivera <stefanor@debian.org>  Wed, 01 Feb 2023 18:00:32 -0400
 

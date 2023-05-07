@@ -22,7 +22,7 @@ import logging
 from glob import glob1
 from os import remove
 from os.path import exists, isdir, join
-from shutil import rmtree
+from shutil import rmtree, move
 from dhpython.build.base import Base, shell_command, copy_test_files
 
 log = logging.getLogger('dhpython')
@@ -97,6 +97,20 @@ class BuildSystem(Base):
     @create_pydistutils_cfg
     def build(self, context, args):
         return '{interpreter.binary_dv} {setup_py} build {args}'
+
+    @shell_command
+    @create_pydistutils_cfg
+    def _bdist_wheel(self, context, args):
+        return '{interpreter.binary_dv} -c "import setuptools, runpy; runpy.run_path(\'{setup_py}\')" bdist_wheel {args}'
+
+    def build_wheel(self, context, args):
+        self._bdist_wheel(context, args)
+        dist_dir = join(args['dir'], 'dist')
+        wheels = glob1(dist_dir, '*.whl')
+        n_wheels = len(wheels)
+        if n_wheels != 1:
+            raise Exception(f"Expected 1 wheel, found {n_wheels}")
+        move(join(dist_dir, wheels[0]), args['home_dir'])
 
     @shell_command
     @create_pydistutils_cfg

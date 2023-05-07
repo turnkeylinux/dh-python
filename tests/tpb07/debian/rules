@@ -14,13 +14,13 @@ override_dh_auto_install:
 	../../pybuild -d bar --install --name=bar
 
 override_dh_auto_test:
-	../../pybuild -d foo --test --name=foo
+	../../pybuild -d foo --test --name=foo --test-tox --test-args=-v
 	../../pybuild -d bar --test --name=bar
 
 override_dh_auto_clean:
 	../../pybuild -d foo --clean --verbose --name=foo
 	../../pybuild -d bar --clean --verbose --name=bar
-	rm -rf .pybuild foo/foo.egg-info bar/bar.egg-info
+	rm -rf .pybuild foo/foo.egg-info bar/bar.egg-info foo/.tox foo/tests-executed-foo
 
 override_dh_installinit:
 	DH_VERBOSE=1 ../../dh_python3
