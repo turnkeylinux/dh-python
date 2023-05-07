@@ -23,6 +23,7 @@ from functools import wraps
 from glob import glob1
 from os import remove, walk
 from os.path import exists, isdir, join
+from pathlib import Path
 from subprocess import Popen, PIPE
 from shutil import rmtree, copyfile, copytree
 from dhpython.exceptions import RequiredCommandMissingException
@@ -229,6 +230,19 @@ class Base:
             return 'cd {build_dir}; {args}'
         elif args['version'] == '2.7' or args['version'] >> '3.1' or args['interpreter'] == 'pypy':
             return 'cd {build_dir}; {interpreter} -m unittest discover -v {args}'
+
+    def build_wheel(self, context, args):
+        raise NotImplementedError("build_wheel method not implemented in %s" % self.NAME)
+
+    def built_wheel(self, context, args):
+        """Return the path to any built wheels we can find"""
+        wheels = list(Path(args['home_dir']).glob('*.whl'))
+        n_wheels = len(wheels)
+        if n_wheels > 1:
+            raise Exception(f"Expecting to have built exactly 1 wheel, but found {n_wheels}")
+        elif n_wheels == 1:
+            return str(wheels[0])
+        return None
 
     def execute(self, context, args, command, log_file=None):
         if log_file is False and self.cfg.really_quiet:

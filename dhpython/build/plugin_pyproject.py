@@ -98,11 +98,11 @@ class BuildSystem(Base):
         return 0
 
     def build(self, context, args):
-        self.build_step1(context, args)
-        self.build_step2(context, args)
+        self.build_wheel(context, args)
+        self.unpack_wheel(context, args)
 
     @shell_command
-    def build_step1(self, context, args):
+    def build_wheel(self, context, args):
         """ build a wheel using the PEP517 builder defined by upstream """
         log.info('Building wheel for %s with "build" module',
                  args['interpreter'])
@@ -114,7 +114,7 @@ class BuildSystem(Base):
                 ' {args}'
                )
 
-    def build_step2(self, context, args):
+    def unpack_wheel(self, context, args):
         """ unpack the wheel into pybuild's normal  """
         log.info('Unpacking wheel built for %s with "installer" module',
                  args['interpreter'])
@@ -138,24 +138,16 @@ class BuildSystem(Base):
             script_kind='posix',
         )
 
-        # FIXME this next step will unpack every single wheel file it finds
-        # which is probably ok since each wheel is built in a separate
-        # directory; but perhaps it should only accept the correctly named
-        # wheels that match the current interpreter?
-        # python-packaging has relevant utilities in
-        #   - packaging/utils.py::parse_wheel_filename
-        #   - packaging/tags.py (although it is current-interpreter-centric)
-        wheels = Path(args['home_dir']).glob('*.whl')
-        for wheel in wheels:
-            if wheel.name.startswith('UNKNOWN'):
-                raise Exception(f'UNKNOWN wheel found: {wheel.name}. Does '
-                                'pyproject.toml specify a build-backend?')
-            with WheelFile.open(wheel) as source:
-                install(
-                    source=source,
-                    destination=destination,
-                    additional_metadata={},
-                )
+        wheel = Path(self.built_wheel(context, args))
+        if wheel.name.startswith('UNKNOWN'):
+            raise Exception(f'UNKNOWN wheel found: {wheel.name}. Does '
+                            'pyproject.toml specify a build-backend?')
+        with WheelFile.open(wheel) as source:
+            install(
+                source=source,
+                destination=destination,
+                additional_metadata={},
+            )
 
     def install(self, context, args):
         log.info('Copying package built for %s to destdir',
