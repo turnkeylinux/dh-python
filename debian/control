@@ -2,8 +2,10 @@ Source: dh-python
 Section: python
 Priority: optional
 Maintainer: Piotr Ożarowski <piotr@debian.org>
-Uploaders: Stefano Rivera <stefanor@debian.org>
-Build-Depends: debhelper-compat (= 13),
+Uploaders:
+ Stefano Rivera <stefanor@debian.org>,
+Build-Depends:
+ debhelper-compat (= 13),
  libdpkg-perl,
  libpython3-stdlib,
  python3-all <!nocheck>,
@@ -20,9 +22,11 @@ Rules-Requires-Root: no
 Package: dh-python
 Architecture: all
 Multi-Arch: foreign
-Depends: ${misc:Depends}, ${python3:Depends},
+Depends:
 # depend on distutils to avoid adding it to Build-Depends in other packages
- python3-distutils | python3 (<< 3.6.5~rc1-1)
+ python3-distutils | python3 (<< 3.6.5~rc1-1),
+ ${misc:Depends},
+ ${python3:Depends},
 Provides:
  dh-sequence-python3,
 Suggests:
@@ -32,7 +36,7 @@ Suggests:
  python3-build,
  python3-installer,
  python3-tomli,
- python3-wheel
+ python3-wheel,
 Breaks:
 # due to /usr/bin/dh_python3 and debhelper files
  python3 (<< 3.3.2-4~),
@@ -51,7 +55,7 @@ Depends:
  python3-build (>> 0.7~),
  python3-installer,
  python3-tomli,
- ${misc:Depends}
+ ${misc:Depends},
 Description: Debian helper tools for packaging Python libraries using PEP517
  This metapackage depends on the components necessary for building packages
  with the generic PEP517 build plugin.
@@ -60,10 +64,10 @@ Package: pybuild-plugin-autopkgtest
 Architecture: all
 Multi-Arch: foreign
 Depends:
- dh-python (= ${source:Version}),
  debhelper,
+ dh-python (= ${source:Version}),
  make,
- ${misc:Depends}
+ ${misc:Depends},
 Description: pybuild autopkgtest test runner (metapackage)
  This package depends on the packages required to run pybuild-autopkgtest, a
  pybuild-based autopkgtest test runner. pybuild-autopkgtest will run the same
