@@ -101,6 +101,10 @@ class BuildSystem(Base):
     @shell_command
     @create_pydistutils_cfg
     def _bdist_wheel(self, context, args):
+        try:
+            import wheel
+        except ImportError:
+            raise Exception("wheel is required to build wheels for distutils/setuptools packages. Build-Depend on python3-wheel.")
         return '{interpreter.binary_dv} -c "import setuptools, runpy; runpy.run_path(\'{setup_py}\')" bdist_wheel {args}'
 
     def build_wheel(self, context, args):
