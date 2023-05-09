@@ -6,6 +6,7 @@ dh-python (5.20230131) UNRELEASED; urgency=medium
     package by using the wheel we built, ourselves. (Closes: #1035675)
     - Packages using the distutils plugin now need python3-wheel installed.
       Raise an error explaining that wheel is needed, if it's missing.
+    - Support all 3 potential tox configuration files. (Closes: #1033486)
 
  -- Stefano Rivera <stefanor@debian.org>  Wed, 01 Feb 2023 18:00:32 -0400
 
