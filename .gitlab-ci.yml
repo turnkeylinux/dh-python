@@ -4,7 +4,7 @@ default:
 tests:
   before_script:
   - apt-get update
-  - apt-get -y install --no-install-recommends build-essential debhelper fakeroot flit libjs-jquery python3-all python3-all-dbg python3-all-dev python3-build python3-installer python3-nose2 python3-poetry-core python3-pytest python3-setuptools python3-tomli tox
+  - apt-get -y install --no-install-recommends build-essential debhelper fakeroot flit libjs-jquery python3-all python3-all-dbg python3-all-dev python3-build python3-installer python3-nose2 python3-poetry-core python3-pytest python3-setuptools python3-cachy tox
 
   script:
   - make tests

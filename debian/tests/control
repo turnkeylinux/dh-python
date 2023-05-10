@@ -27,10 +27,10 @@ Depends:
  flit,
  pybuild-plugin-pyproject,
  python3-all-dev,
+ python3-cachy,
  python3-poetry-core,
  python3-pytest,
  python3-setuptools,
- python3-tomli,
  tox (>= 4),
 Restrictions: allow-stderr
 
