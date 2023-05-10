@@ -48,7 +48,7 @@ def copy_test_files(dest='{build_dir}',
 
         @wraps(func)
         def __copy_test_files(self, context, args, *oargs, **kwargs):
-            files_to_copy = {'test', 'tests'}
+            files_to_copy = {'pyproject.toml', 'pytest.ini', 'test', 'tests'}
             # check debian/pybuild_pythonX.Y.testfiles
             for tpl in ('_{i}{v}', '_{i}{m}', ''):
                 tpl = tpl.format(i=args['interpreter'].name,

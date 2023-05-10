@@ -116,7 +116,8 @@ testfiles
     (you can also use `debian/pybuild_pythonX.testfiles` or
     `debian/pybuild_pythonX.Y.testfiles`) and files listed there will be copied
     before test step and removed before install step.
-    By default only `test` and `tests` directories are copied to build directory.
+    By default only `pyproject.toml` and `pytest.ini` files, and `test`
+    and `tests` directories are copied to build directory.
 
 BUILD SYSTEM ARGUMENTS
 ----------------------

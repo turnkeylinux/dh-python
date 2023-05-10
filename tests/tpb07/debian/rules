@@ -15,7 +15,7 @@ override_dh_auto_install:
 
 override_dh_auto_test:
 	../../pybuild -d foo --test --name=foo --test-tox --test-args=-v
-	../../pybuild -d bar --test --name=bar
+	../../pybuild -d bar --test --name=bar --test-pytest -v
 
 override_dh_auto_clean:
 	../../pybuild -d foo --clean --verbose --name=foo

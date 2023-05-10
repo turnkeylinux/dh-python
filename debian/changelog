@@ -12,6 +12,8 @@ dh-python (5.20230131) UNRELEASED; urgency=medium
   * Use tomllib (available since Python 3.11) instead of tomli.
     (Closes: #1032866)
   * Use cachy as an example dependency instead of tomli, in tests.
+  * Add pyproject.toml and pytest.ini to the default testfiles.
+    (Closes: #1031609)
 
  -- Stefano Rivera <stefanor@debian.org>  Wed, 01 Feb 2023 18:00:32 -0400
 
