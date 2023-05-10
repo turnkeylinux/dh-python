@@ -68,6 +68,7 @@ def copy_test_files(dest='{build_dir}',
                 dst_dpath = join(dest.format(**args), name.rsplit('/', 1)[-1])
                 if exists(src_dpath):
                     if not exists(dst_dpath):
+                        log.debug("Copying %s to %s for tests", src_dpath, dst_dpath)
                         if isdir(src_dpath):
                             copytree(src_dpath, dst_dpath)
                         else:
