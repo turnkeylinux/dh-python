@@ -1,4 +1,4 @@
-dh-python (5.20230131) UNRELEASED; urgency=medium
+dh-python (5.20230510) experimental; urgency=medium
 
   * Add support for PEP440 standards-markers in PyDist files (which superseded
     PEP386 almost a decade ago).
@@ -15,7 +15,7 @@ dh-python (5.20230131) UNRELEASED; urgency=medium
   * Add pyproject.toml and pytest.ini to the default testfiles.
     (Closes: #1031609)
 
- -- Stefano Rivera <stefanor@debian.org>  Wed, 01 Feb 2023 18:00:32 -0400
+ -- Stefano Rivera <stefanor@debian.org>  Wed, 10 May 2023 19:26:51 -0400
 
 dh-python (5.20230130) unstable; urgency=medium
 
