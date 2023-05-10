@@ -35,7 +35,6 @@ Suggests:
  libdpkg-perl,
  python3-build,
  python3-installer,
- python3-tomli,
  python3-wheel,
 Breaks:
 # due to /usr/bin/dh_python3 and debhelper files
@@ -54,7 +53,6 @@ Depends:
  dh-python (= ${source:Version}),
  python3-build (>> 0.7~),
  python3-installer,
- python3-tomli,
  ${misc:Depends},
 Description: Debian helper tools for packaging Python libraries using PEP517
  This metapackage depends on the components necessary for building packages

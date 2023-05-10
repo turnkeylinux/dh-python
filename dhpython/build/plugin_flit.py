@@ -29,11 +29,6 @@ import os.path as osp
 import shutil
 import sysconfig
 try:
-    import tomli
-except ModuleNotFoundError:
-    # Plugin still works, only needed for autodetection
-    pass
-try:
     from flit.install import Installer
 except ImportError:
     Installer = object

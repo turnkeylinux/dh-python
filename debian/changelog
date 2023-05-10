@@ -9,6 +9,8 @@ dh-python (5.20230131) UNRELEASED; urgency=medium
     - Support all 3 potential tox configuration files. (Closes: #1033486)
   * dh_python3: Write a "debian" INSTALLER file into dist-info directories.
     (Closes: #1032133)
+  * Use tomllib (available since Python 3.11) instead of tomli.
+    (Closes: #1032866)
 
  -- Stefano Rivera <stefanor@debian.org>  Wed, 01 Feb 2023 18:00:32 -0400
 
