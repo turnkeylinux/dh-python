@@ -1,3 +1,9 @@
+dh-python (6.20230510) UNRELEASED; urgency=medium
+
+  * Bump major version, post-bookworm.
+
+ -- Stefano Rivera <stefanor@debian.org>  Wed, 10 May 2023 19:40:02 -0400
+
 dh-python (5.20230510) experimental; urgency=medium
 
   * Add support for PEP440 standards-markers in PyDist files (which superseded
