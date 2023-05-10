@@ -260,6 +260,14 @@ def remove_from_RECORD(distdir, files):
         fh.writelines(sorted(filtered))
 
 
+def write_INSTALLER(distdir):
+    """Write 'debain' as the INSTALLER"""
+    log.debug("Writing INSTALLER in %s", distdir)
+    installer = join(distdir, "INSTALLER")
+    with open(installer, "w") as f:
+        f.write("debian\n")
+
+
 class Scan:
     UNWANTED_DIRS = re.compile(r'.*/__pycache__(/.*)?$')
     UNWANTED_FILES = re.compile(r'.*\.py[co]$')
@@ -572,6 +580,7 @@ class Scan:
             return
 
         if file_names:
+            write_INSTALLER(dpath)
             if 'METADATA' in file_names:
                 self.result['dist-info'].add(join(dpath, 'METADATA'))
 
