@@ -1,8 +1,7 @@
-Source: dh-python
+Source: dh-python2
 Section: python
 Priority: optional
-Maintainer: Piotr Ożarowski <piotr@debian.org>
-Uploaders: Stefano Rivera <stefanor@debian.org>
+Maintainer: Jeremy Davis <jeremy@turnkeylinux.org>
 Build-Depends: debhelper-compat (= 12), python3-minimal, libpython3-stdlib, libdpkg-perl,
 # provides rst2man command (use python-docutils to avoid circular deps):
  python3-docutils,
@@ -14,7 +13,7 @@ Standards-Version: 4.5.0
 Vcs-Git: https://salsa.debian.org/python-team/tools/dh-python.git
 Vcs-Browser: https://salsa.debian.org/python-team/tools/dh-python
 
-Package: dh-python
+Package: dh-python2
 Architecture: all
 Multi-Arch: foreign
 Depends: ${misc:Depends}, ${python3:Depends},
@@ -27,7 +26,8 @@ Breaks:
  python3 (<< 3.3.2-4~),
 # due to /usr/bin/dh_python2 and debhelper files
  python,
- python2 (<< 2.7.18-2)
+ python2 (<< 2.7.18-2),
+ dh-python
 Replaces: python3 (<< 3.3.2-4~), python (<< 2.7.18-2), python2 (<< 2.7.18-2) 
 Description: Debian helper tools for packaging Python libraries and applications
  This package contains:
