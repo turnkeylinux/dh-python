@@ -1,0 +1,5 @@
+dh/*        usr/share/perl5/Debian/Debhelper/Sequence/
+dh_pypy     share/dh-python/
+dh_python2  share/dh-python/
+dh_python3  share/dh-python/
+pybuild     share/dh-python/
