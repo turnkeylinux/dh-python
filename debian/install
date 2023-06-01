@@ -4,5 +4,5 @@ dh_pypy         usr/share/dh-python/
 dh_python2      usr/share/dh-python/
 dh_python3      usr/share/dh-python/
 pybuild         usr/share/dh-python/
-dhpython/*.py   usr/lib/python3/dist-packages/
-dhpython/build  usr/lib/python3/dist-packages/
+dhpython/*.py   usr/lib/python3/dist-packages/dhpython/
+dhpython/build  usr/lib/python3/dist-packages/dhpython/
