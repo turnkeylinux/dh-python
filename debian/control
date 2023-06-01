@@ -2,7 +2,7 @@ Source: dh-python2
 Section: python
 Priority: optional
 Maintainer: Jeremy Davis <jeremy@turnkeylinux.org>
-Build-Depends: debhelper-compat (= 12), python3-minimal, libpython3-stdlib, libdpkg-perl,
+Build-Depends: python3-minimal, libpython3-stdlib, libdpkg-perl,
 # provides rst2man command (use python-docutils to avoid circular deps):
  python3-docutils,
 # used by tests: (disabled to avoid circular deps with python3)
