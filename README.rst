@@ -1,3 +1,10 @@
+**Note this is a python2 focussed fork of dh-python**
+-----------------------------------------------------
+
+This fork of dh-python is explicitly focussed on support for building python2
+packages on bookworm. It is anticipated that this will only be continued until
+the release of a Debian Trixie/13 based TurnKey (i.e. v19.x).
+
 ===========
  dh-python
 ===========
